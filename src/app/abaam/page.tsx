@@ -86,7 +86,7 @@ export default async function AbaamPage() {
               {branch?.display_name ?? "Abaam Branch"}
             </h1>
             <div className="flex items-center gap-4 text-white/80 text-sm">
-              <span className="flex items-center gap-1"><MapPin size={14} /> {branch?.location ?? "Abaam, Kwaebibirim Municipal, Eastern Region"}</span>
+              <span className="flex items-center gap-1 text-[#D4AF37] font-medium drop-shadow"><MapPin size={14} /> {branch?.location ?? "Abaam, Kwaebibirim Municipal, Eastern Region"}</span>
               <a href={`tel:${settings.phone_number || "0594299293"}`} className="flex items-center gap-1 hover:text-[#D4AF37] transition-colors">
                 <Phone size={14} /> {settings.phone_number || "0594299293"}
               </a>
