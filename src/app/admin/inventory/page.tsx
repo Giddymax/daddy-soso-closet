@@ -23,7 +23,7 @@ export default function AdminInventoryPage() {
   const [loadingBranches, setLoadingBranches] = useState(true);
   const [loadingInventory, setLoadingInventory] = useState(false);
   const [restockItem, setRestockItem] = useState<InventoryItem | null>(null);
-  const [restockQty, setRestockQty] = useState(0);
+  const [restockQty, setRestockQty] = useState<number | "">("");
   const [restockNote, setRestockNote] = useState("");
   const [restocking, setRestocking] = useState(false);
 
@@ -50,15 +50,16 @@ export default function AdminInventoryPage() {
   useEffect(() => { load(); }, [load]);
 
   async function handleRestock() {
-    if (!restockItem || restockQty <= 0 || !staff || !selectedBranch) return;
+    const qty = Number(restockQty);
+    if (!restockItem || qty <= 0 || !staff || !selectedBranch) return;
     setRestocking(true);
     await supabase
       .from("inventory")
-      .update({ quantity: restockItem.quantity + restockQty, last_restocked_at: new Date().toISOString() })
+      .update({ quantity: restockItem.quantity + qty, last_restocked_at: new Date().toISOString() })
       .eq("id", restockItem.id);
     await supabase.from("restock_log").insert({
       product_id: restockItem.product?.id, branch_id: selectedBranch.id,
-      quantity_added: restockQty, restocked_by: staff.id, notes: restockNote,
+      quantity_added: qty, restocked_by: staff.id, notes: restockNote,
     });
     await fetch("/api/notify-restock", {
       method: "POST",
@@ -66,11 +67,11 @@ export default function AdminInventoryPage() {
       body: JSON.stringify({
         branchName: selectedBranch.display_name,
         productName: restockItem.product?.name,
-        quantityAdded: restockQty,
+        quantityAdded: qty,
         staffName: staff.full_name,
       }),
     }).catch(() => {});
-    setRestockItem(null); setRestockQty(0); setRestockNote("");
+    setRestockItem(null); setRestockQty(""); setRestockNote("");
     setRestocking(false);
     load();
   }
@@ -164,8 +165,9 @@ export default function AdminInventoryPage() {
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-gray-600 mb-1">Quantity to Add</label>
-                <input type="number" min={1} value={restockQty}
-                  onChange={(e) => setRestockQty(Number(e.target.value))}
+                <input type="number" min={1} placeholder="Enter quantity"
+                  value={restockQty}
+                  onChange={(e) => setRestockQty(e.target.value === "" ? "" : Number(e.target.value))}
                   className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#0077B6] focus:outline-none"
                 />
               </div>
@@ -178,7 +180,7 @@ export default function AdminInventoryPage() {
               </div>
               <div className="flex gap-3">
                 <button onClick={() => setRestockItem(null)} className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold hover:bg-gray-50">Cancel</button>
-                <button onClick={handleRestock} disabled={restockQty <= 0 || restocking}
+                <button onClick={handleRestock} disabled={!restockQty || Number(restockQty) <= 0 || restocking}
                   className="flex-1 py-2.5 rounded-xl bg-[#0077B6] text-white text-sm font-semibold hover:bg-[#023E8A] disabled:opacity-50 transition-colors">
                   {restocking ? "Saving…" : "Confirm Restock"}
                 </button>
