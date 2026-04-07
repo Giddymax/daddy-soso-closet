@@ -111,18 +111,18 @@ export default function AdminPage() {
                     <BarChart2 size={13} /> View Analytics
                   </Link>
                 </div>
-                <div className="grid grid-cols-3 gap-4 text-center">
+                <div className="grid grid-cols-3 gap-2 text-center">
                   <div>
-                    <p className="text-2xl font-bold text-[#0077B6]">{formatCurrency(b.todayRevenue)}</p>
-                    <p className="text-xs text-gray-400">Today</p>
+                    <p className="text-sm sm:text-xl font-bold text-[#0077B6] leading-tight break-all">{formatCurrency(b.todayRevenue)}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Today</p>
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-green-600">{b.itemsSold}</p>
-                    <p className="text-xs text-gray-400">Items Sold</p>
+                    <p className="text-xl sm:text-2xl font-bold text-green-600">{b.itemsSold}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Items Sold</p>
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-red-500">{b.lowStockCount}</p>
-                    <p className="text-xs text-gray-400">Low Stock</p>
+                    <p className="text-xl sm:text-2xl font-bold text-red-500">{b.lowStockCount}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Low Stock</p>
                   </div>
                 </div>
               </div>
