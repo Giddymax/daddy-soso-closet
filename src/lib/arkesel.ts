@@ -42,9 +42,10 @@ export function formatSalesSMS(params: {
   total: number;
   staffName: string;
   paymentMethod: string;
+  dailyTotals: Array<{ branchName: string; total: number; count: number }>;
 }): string {
   const itemLines = params.items
-    .map((i) => `  ${i.name} x${i.quantity} (₵${i.price.toFixed(2)})`)
+    .map((i) => `  ${i.name} x${i.quantity} (GH\u20b5${i.price.toFixed(2)})`)
     .join("\n");
 
   const now = new Date().toLocaleString("en-GH", {
@@ -53,15 +54,22 @@ export function formatSalesSMS(params: {
     timeStyle: "short",
   });
 
-  return `[SALE ALERT] Daddy SoSo Closet
+  const dailyLines = params.dailyTotals
+    .map((b) => `  ${b.branchName}: GH\u20b5${b.total.toFixed(2)} (${b.count} sale${b.count !== 1 ? "s" : ""})`)
+    .join("\n");
+
+  return `[SALE] Daddy SoSo Closet
 Branch: ${params.branchName}
 Receipt: ${params.receiptNumber}
 Items:
 ${itemLines}
-Total: ₵${params.total.toFixed(2)}
+Sale Total: GH\u20b5${params.total.toFixed(2)}
 Staff: ${params.staffName}
-Payment: ${params.paymentMethod}
-Time: ${now}`;
+Payment: ${params.paymentMethod.toUpperCase()}
+Time: ${now}
+
+Today's Running Totals:
+${dailyLines}`;
 }
 
 export function formatRestockSMS(params: {
