@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --sea-blue: #0077b6;
+  --sea-blue-light: #00b4d8;
+  --sea-blue-dark: #023e8a;
+  --accent-yellow: #d4af37;
+  --white: #ffffff;
+  --light-gray: #f8f9fa;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: var(--font-inter), sans-serif;
+    background-color: var(--white);
+    color: #1a1a2e;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-[#0077B6] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#023E8A] transition-all duration-200 shadow-md hover:shadow-lg;
+  }
+  .btn-yellow {
+    @apply bg-[#D4AF37] text-[#023E8A] px-6 py-3 rounded-lg font-bold hover:bg-[#b8962e] transition-all duration-200 shadow-md hover:shadow-lg;
+  }
+  .btn-outline {
+    @apply border-2 border-[#0077B6] text-[#0077B6] px-6 py-3 rounded-lg font-semibold hover:bg-[#0077B6] hover:text-white transition-all duration-200;
+  }
+  .card {
+    @apply bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300;
+  }
+  .section-title {
+    @apply font-playfair text-3xl md:text-4xl font-bold text-[#023E8A];
+  }
+  .skeleton {
+    @apply bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-shimmer rounded-lg;
+  }
+}
+
+/* Thermal receipt printing — handled in a dedicated popup window */

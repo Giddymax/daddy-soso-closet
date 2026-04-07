@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/samam/Desktop/DEVELOPER/daddy-soso-closet/**)",
+      "Bash(npx tsc:*)",
+      "Bash(npx next:*)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\samam\\Desktop",
+      "c:\\Users\\samam\\Desktop\\DEVELOPER\\daddy-soso-closet\\src\\app"
+    ]
+  }
+}
