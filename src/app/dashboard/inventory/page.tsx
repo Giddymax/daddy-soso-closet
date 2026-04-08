@@ -72,41 +72,41 @@ export default function InventoryPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-playfair text-2xl font-bold text-[#023E8A] mb-1">Inventory</h1>
-        <p className="text-gray-500 text-sm">{branch?.display_name}</p>
+        <h1 className="font-playfair text-2xl font-bold text-[#2C1A0E] mb-1">Inventory</h1>
+        <p className="text-stone-500 text-sm">{branch?.display_name}</p>
       </div>
 
       <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-[#F8F9FA]">
+            <thead className="bg-[#FAF8F5]">
               <tr>
-                <th className="text-left px-4 py-3 text-gray-500 font-medium">Product</th>
-                <th className="text-left px-4 py-3 text-gray-500 font-medium">Category</th>
-                <th className="text-center px-4 py-3 text-gray-500 font-medium">Stock</th>
-                <th className="text-center px-4 py-3 text-gray-500 font-medium">Status</th>
-                <th className="text-right px-4 py-3 text-gray-500 font-medium">Last Restocked</th>
+                <th className="text-left px-4 py-3 text-stone-500 font-medium">Product</th>
+                <th className="text-left px-4 py-3 text-stone-500 font-medium">Category</th>
+                <th className="text-center px-4 py-3 text-stone-500 font-medium">Stock</th>
+                <th className="text-center px-4 py-3 text-stone-500 font-medium">Status</th>
+                <th className="text-right px-4 py-3 text-stone-500 font-medium">Last Restocked</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-stone-50">
               {loading
                 ? Array.from({ length: 5 }).map((_, i) => (
                     <tr key={i}><td colSpan={6} className="px-4 py-3"><div className="skeleton h-4 rounded" /></td></tr>
                   ))
                 : inventory.map((item) => (
-                    <tr key={item.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 font-medium text-[#023E8A]">{item.product?.name ?? "—"}</td>
-                      <td className="px-4 py-3 text-gray-500">{(item.product?.category as { name: string } | null)?.name ?? "—"}</td>
+                    <tr key={item.id} className="hover:bg-stone-50">
+                      <td className="px-4 py-3 font-medium text-[#2C1A0E]">{item.product?.name ?? "—"}</td>
+                      <td className="px-4 py-3 text-stone-500">{(item.product?.category as { name: string } | null)?.name ?? "—"}</td>
                       <td className="px-4 py-3 text-center font-bold">{item.quantity}</td>
                       <td className="px-4 py-3 text-center">{statusBadge(item.quantity, item.restock_threshold)}</td>
-                      <td className="px-4 py-3 text-right text-gray-400 text-xs">
+                      <td className="px-4 py-3 text-right text-stone-400 text-xs">
                         {item.last_restocked_at ? formatGhanaDateTime(item.last_restocked_at) : "Never"}
                       </td>
                       <td className="px-4 py-3 text-right">
                         <button
                           onClick={() => { setRestockItem(item); setRestockQty(0); }}
-                          className="flex items-center gap-1 bg-[#0077B6]/10 text-[#0077B6] px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-[#0077B6] hover:text-white transition-colors ml-auto"
+                          className="flex items-center gap-1 bg-[#8B5E3C]/10 text-[#8B5E3C] px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-[#8B5E3C] hover:text-white transition-colors ml-auto"
                         >
                           <Plus size={12} /> Restock
                         </button>
@@ -117,7 +117,7 @@ export default function InventoryPage() {
             </tbody>
           </table>
           {!loading && inventory.length === 0 && (
-            <div className="text-center py-12 text-gray-400">
+            <div className="text-center py-12 text-stone-400">
               <Package size={32} className="mx-auto mb-2 opacity-30" />
               <p>No inventory items found.</p>
             </div>
@@ -129,28 +129,28 @@ export default function InventoryPage() {
       {restockItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
-            <h3 className="font-playfair text-lg font-bold text-[#023E8A] mb-1">Restock Product</h3>
-            <p className="text-sm text-gray-500 mb-4">{restockItem.product?.name}</p>
+            <h3 className="font-playfair text-lg font-bold text-[#2C1A0E] mb-1">Restock Product</h3>
+            <p className="text-sm text-stone-500 mb-4">{restockItem.product?.name}</p>
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">Quantity to Add</label>
+                <label className="block text-xs font-semibold text-stone-600 mb-1">Quantity to Add</label>
                 <input type="number" min={1} placeholder="Enter quantity"
                   value={restockQty}
                   onChange={(e) => setRestockQty(e.target.value === "" ? "" : Number(e.target.value))}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#0077B6] focus:outline-none"
+                  className="w-full px-4 py-2.5 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-[#8B5E3C] focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">Notes (optional)</label>
+                <label className="block text-xs font-semibold text-stone-600 mb-1">Notes (optional)</label>
                 <input type="text" value={restockNote} onChange={(e) => setRestockNote(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#0077B6] focus:outline-none"
+                  className="w-full px-4 py-2.5 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-[#8B5E3C] focus:outline-none"
                   placeholder="e.g. New delivery"
                 />
               </div>
               <div className="flex gap-3">
-                <button onClick={() => setRestockItem(null)} className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold hover:bg-gray-50">Cancel</button>
+                <button onClick={() => setRestockItem(null)} className="flex-1 py-2.5 rounded-xl border border-stone-200 text-sm font-semibold hover:bg-stone-50">Cancel</button>
                 <button onClick={handleRestock} disabled={!restockQty || Number(restockQty) <= 0 || restocking}
-                  className="flex-1 py-2.5 rounded-xl bg-[#0077B6] text-white text-sm font-semibold hover:bg-[#023E8A] disabled:opacity-50 transition-colors">
+                  className="flex-1 py-2.5 rounded-xl bg-[#2C1A0E] text-white text-sm font-semibold hover:bg-[#8B5E3C] disabled:opacity-50 transition-colors">
                   {restocking ? "Saving…" : "Confirm Restock"}
                 </button>
               </div>

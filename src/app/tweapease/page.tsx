@@ -54,16 +54,16 @@ export default async function TweapeasePage() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#0077B6] shadow-lg">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm border-b border-stone-100">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-white/80 hover:text-white transition-colors">
+          <Link href="/" className="flex items-center gap-2 text-stone-500 hover:text-[#2C1A0E] transition-colors">
             <ArrowLeft size={18} />
             <span className="text-sm font-medium">Back to Main Site</span>
           </Link>
-          <span className="font-playfair font-bold text-white text-sm hidden sm:block">
+          <span className="font-playfair font-bold text-[#2C1A0E] text-sm hidden sm:block">
             Daddy SoSo Closet — Tweapease Branch
           </span>
-          <Link href="/auth/login" className="flex items-center gap-1.5 bg-[#D4AF37] text-[#023E8A] px-3 py-1.5 rounded-lg font-bold text-xs hover:bg-[#b8962e] transition-colors">
+          <Link href="/auth/login" className="flex items-center gap-1.5 bg-[#2C1A0E] text-white px-3 py-1.5 rounded-full font-bold text-xs hover:bg-[#8B5E3C] transition-colors">
             <ShoppingBag size={14} /> Dashboard
           </Link>
         </div>
@@ -79,15 +79,15 @@ export default async function TweapeasePage() {
             className="object-cover object-center"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#023E8A]/80 to-[#0077B6]/50" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#2C1A0E]/80 to-[#5C3520]/45" />
           <div className="relative z-10 h-full flex flex-col justify-center px-8 max-w-7xl mx-auto">
-            <span className="bg-[#D4AF37] text-[#023E8A] text-xs font-bold px-3 py-1 rounded-full w-fit mb-3">Boutique</span>
+            <span className="bg-[#C4954A] text-white text-xs font-bold px-3 py-1 rounded-full w-fit mb-3">Boutique</span>
             <h1 className="font-playfair text-4xl md:text-5xl font-bold text-white mb-2">
               {branch?.display_name ?? "Tweapease Branch"}
             </h1>
             <div className="flex items-center gap-4 text-white/80 text-sm">
-              <span className="flex items-center gap-1 text-[#D4AF37] font-medium drop-shadow"><MapPin size={14} /> {branch?.location ?? "Tweapease, Kwaebibirim Municipal, Eastern Region"}</span>
-              <a href={`tel:${settings.phone_number || "0594299293"}`} className="flex items-center gap-1 hover:text-[#D4AF37] transition-colors">
+              <span className="flex items-center gap-1 text-[#C4954A] font-medium drop-shadow"><MapPin size={14} /> {branch?.location ?? "Tweapease, Kwaebibirim Municipal, Eastern Region"}</span>
+              <a href={`tel:${settings.phone_number || "0594299293"}`} className="flex items-center gap-1 hover:text-[#C4954A] transition-colors">
                 <Phone size={14} /> {settings.phone_number || "0594299293"}
               </a>
             </div>
@@ -97,7 +97,7 @@ export default async function TweapeasePage() {
         {settings.tweapease_description && (
           <section className="bg-white py-10">
             <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-              <p className="text-gray-600 leading-relaxed text-base">{settings.tweapease_description}</p>
+              <p className="text-stone-500 leading-relaxed text-base">{settings.tweapease_description}</p>
             </div>
           </section>
         )}

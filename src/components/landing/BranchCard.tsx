@@ -21,9 +21,9 @@ export default function BranchCard({
   const isSalon = type === "boutique_salon";
 
   return (
-    <div className="card group overflow-hidden border border-[#00B4D8]/20 hover:border-[#D4AF37]/60 transition-all duration-300 hover:-translate-y-1">
+    <div className="card group overflow-hidden border border-stone-100 hover:border-[#C4954A]/50 transition-all duration-300 hover:-translate-y-1">
       {/* Image */}
-      <div className="relative h-52 bg-gradient-to-br from-[#0077B6]/20 to-[#023E8A]/30 overflow-hidden">
+      <div className="relative h-52 bg-gradient-to-br from-stone-100 to-stone-200 overflow-hidden">
         {imageUrl ? (
           <SupabaseImage
             src={imageUrl}
@@ -35,46 +35,46 @@ export default function BranchCard({
         ) : (
           <div className="w-full h-full flex items-center justify-center">
             {isSalon ? (
-              <Scissors size={48} className="text-[#0077B6]/40" />
+              <Scissors size={48} className="text-[#8B5E3C]/30" />
             ) : (
-              <ShoppingBag size={48} className="text-[#0077B6]/40" />
+              <ShoppingBag size={48} className="text-[#8B5E3C]/30" />
             )}
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#023E8A]/60 to-transparent" />
-        <span className="absolute top-3 right-3 bg-[#D4AF37] text-[#023E8A] text-xs font-bold px-3 py-1 rounded-full">
+        <div className="absolute inset-0 bg-gradient-to-t from-[#2C1A0E]/55 to-transparent" />
+        <span className="absolute top-3 right-3 bg-[#C4954A] text-white text-xs font-bold px-3 py-1 rounded-full">
           {isSalon ? "Boutique & Salon" : "Boutique"}
         </span>
       </div>
 
       {/* Content */}
       <div className="p-6">
-        <h3 className="font-playfair text-xl font-bold text-[#023E8A] mb-2">
+        <h3 className="font-playfair text-xl font-bold text-[#2C1A0E] mb-2">
           {displayName}
         </h3>
-        <div className="flex items-center gap-1.5 text-sm text-gray-500 mb-4">
-          <MapPin size={13} className="text-[#0077B6]" />
+        <div className="flex items-center gap-1.5 text-sm text-stone-400 mb-4">
+          <MapPin size={13} className="text-[#8B5E3C]" />
           {location}
         </div>
         <div className="flex flex-wrap gap-2 mb-5">
-          <span className="text-xs bg-[#0077B6]/10 text-[#0077B6] px-2.5 py-1 rounded-full font-medium">
+          <span className="text-xs bg-stone-100 text-stone-600 px-2.5 py-1 rounded-full font-medium">
             Clothing
           </span>
-          <span className="text-xs bg-[#0077B6]/10 text-[#0077B6] px-2.5 py-1 rounded-full font-medium">
+          <span className="text-xs bg-stone-100 text-stone-600 px-2.5 py-1 rounded-full font-medium">
             Accessories
           </span>
-          <span className="text-xs bg-[#0077B6]/10 text-[#0077B6] px-2.5 py-1 rounded-full font-medium">
+          <span className="text-xs bg-stone-100 text-stone-600 px-2.5 py-1 rounded-full font-medium">
             Footwear
           </span>
           {isSalon && (
-            <span className="text-xs bg-[#D4AF37]/20 text-[#023E8A] px-2.5 py-1 rounded-full font-medium">
+            <span className="text-xs bg-[#C4954A]/15 text-[#8B5E3C] px-2.5 py-1 rounded-full font-medium">
               Salon
             </span>
           )}
         </div>
         <Link
           href={href}
-          className="flex items-center gap-2 text-[#0077B6] font-semibold hover:gap-3 transition-all duration-200 group/link"
+          className="flex items-center gap-2 text-[#8B5E3C] font-semibold hover:gap-3 transition-all duration-200 group/link"
         >
           Visit Branch
           <ArrowRight

@@ -35,13 +35,13 @@ export default function HeroSection({ heroImageUrl, tagline }: HeroSectionProps)
         </div>
       )}
 
-      {/* Overlay gradient */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#023E8A]/80 via-[#0077B6]/60 to-[#023E8A]/40" />
+      {/* Warm earthy overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#2C1A0E]/80 via-[#5C3520]/55 to-[#2C1A0E]/35" />
 
       {/* Content */}
       <div className="relative z-10 text-center px-4 sm:px-6 max-w-4xl mx-auto">
         <div
-          className="inline-flex items-center gap-2 bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-semibold px-4 py-1.5 rounded-full mb-6 backdrop-blur-sm animate-fadeIn"
+          className="inline-flex items-center gap-2 bg-[#C4954A]/20 border border-[#C4954A]/40 text-[#C4954A] text-xs font-semibold px-4 py-1.5 rounded-full mb-6 backdrop-blur-sm animate-fadeIn"
         >
           <MapPin size={12} />
           Kwaebibirim Municipal, Eastern Region, Ghana
@@ -52,11 +52,11 @@ export default function HeroSection({ heroImageUrl, tagline }: HeroSectionProps)
           style={{ animationDelay: "0.1s", opacity: 0 }}
         >
           Daddy SoSo
-          <span className="block text-[#D4AF37]">Closet</span>
+          <span className="block text-[#C4954A]">Closet</span>
         </h1>
 
         <p
-          className="font-playfair italic text-xl sm:text-2xl text-white/90 mb-10 animate-fadeInUp"
+          className="font-playfair italic text-xl sm:text-2xl text-white/85 mb-10 animate-fadeInUp"
           style={{ animationDelay: "0.25s", opacity: 0 }}
         >
           {tagline || "Fashion. Style. Elegance."}
@@ -68,13 +68,13 @@ export default function HeroSection({ heroImageUrl, tagline }: HeroSectionProps)
         >
           <Link
             href="/tweapease"
-            className="bg-white text-[#0077B6] px-8 py-4 rounded-xl font-bold text-lg hover:bg-[#D4AF37] hover:text-[#023E8A] transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-0.5"
+            className="bg-white text-[#2C1A0E] px-8 py-4 rounded-full font-bold text-lg hover:bg-[#C4954A] hover:text-white transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-0.5"
           >
             Tweapease Branch
           </Link>
           <Link
             href="/abaam"
-            className="bg-white text-[#023E8A] px-8 py-4 rounded-xl font-bold text-lg hover:bg-[#228B22] hover:text-white active:bg-[#1a6b1a] transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-0.5"
+            className="bg-[#2C1A0E] text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-[#8B5E3C] transition-all duration-300 shadow-xl hover:shadow-2xl hover:-translate-y-0.5"
           >
             Abaam Branch
           </Link>

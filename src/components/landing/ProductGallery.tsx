@@ -16,9 +16,9 @@ const ProductCard = memo(function ProductCard({
   product: Product & { category?: Category };
 }) {
   return (
-    <div className="card group overflow-hidden border border-gray-100 hover:border-[#D4AF37]/50 transition-all duration-300 hover:-translate-y-1">
+    <div className="card group overflow-hidden border border-stone-100 hover:border-[#C4954A]/40 transition-all duration-300 hover:-translate-y-1">
       {/* Image container — fixed height, overflow hidden */}
-      <div className="relative h-56 w-full bg-gradient-to-br from-[#F8F9FA] to-[#E8F4FD] overflow-hidden">
+      <div className="relative h-56 w-full bg-gradient-to-br from-stone-50 to-stone-100 overflow-hidden">
         {product.image_url ? (
           <SupabaseImage
             src={product.image_url}
@@ -30,26 +30,26 @@ const ProductCard = memo(function ProductCard({
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <ShoppingBag size={40} className="text-[#0077B6]/30" />
+            <ShoppingBag size={40} className="text-[#8B5E3C]/25" />
           </div>
         )}
       </div>
 
       <div className="p-4">
-        <span className="text-xs text-[#00B4D8] font-medium uppercase tracking-wide">
+        <span className="text-xs text-[#A67C5B] font-medium uppercase tracking-wide">
           {product.category?.name ?? "Uncategorized"}
         </span>
-        <h4 className="font-semibold text-[#023E8A] mt-1 mb-1 text-sm leading-snug">
+        <h4 className="font-semibold text-[#2C1A0E] mt-1 mb-1 text-sm leading-snug">
           {product.name}
         </h4>
         {product.description && (
-          <p className="text-gray-400 text-xs mb-2 line-clamp-2 leading-relaxed">{product.description}</p>
+          <p className="text-stone-400 text-xs mb-2 line-clamp-2 leading-relaxed">{product.description}</p>
         )}
         <div className="flex items-center justify-between">
-          <span className="text-lg font-bold text-[#0077B6]">
+          <span className="text-lg font-bold text-[#8B5E3C]">
             {formatCurrency(product.price)}
           </span>
-          <span className="text-[10px] text-gray-400 italic">No discount</span>
+          <span className="text-[10px] text-stone-400 italic">No discount</span>
         </div>
       </div>
     </div>
@@ -65,14 +65,14 @@ export default function ProductGallery({ products, categories }: ProductGalleryP
       : products.filter((p) => p.category?.slug === activeCategory);
 
   return (
-    <section id="products" className="py-20 bg-[#F8F9FA]">
+    <section id="products" className="py-20 bg-[#FAF8F5]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <p className="text-[#0077B6] font-semibold text-sm uppercase tracking-widest mb-2">
+          <p className="text-[#8B5E3C] font-semibold text-sm uppercase tracking-widest mb-2">
             Our Collection
           </p>
           <h2 className="section-title">Featured Products</h2>
-          <div className="w-16 h-1 bg-[#D4AF37] mx-auto mt-3 rounded-full" />
+          <div className="w-16 h-1 bg-[#C4954A] mx-auto mt-3 rounded-full" />
         </div>
 
         {/* Category filters */}
@@ -81,8 +81,8 @@ export default function ProductGallery({ products, categories }: ProductGalleryP
             onClick={() => setActiveCategory("all")}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
               activeCategory === "all"
-                ? "bg-[#0077B6] text-white"
-                : "bg-white text-gray-600 hover:bg-[#0077B6]/10"
+                ? "bg-[#2C1A0E] text-white"
+                : "bg-white text-stone-600 hover:bg-stone-100 border border-stone-200"
             }`}
           >
             All
@@ -93,8 +93,8 @@ export default function ProductGallery({ products, categories }: ProductGalleryP
               onClick={() => setActiveCategory(cat.slug)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 activeCategory === cat.slug
-                  ? "bg-[#0077B6] text-white"
-                  : "bg-white text-gray-600 hover:bg-[#0077B6]/10"
+                  ? "bg-[#2C1A0E] text-white"
+                  : "bg-white text-stone-600 hover:bg-stone-100 border border-stone-200"
               }`}
             >
               {cat.name}
@@ -104,7 +104,7 @@ export default function ProductGallery({ products, categories }: ProductGalleryP
 
         {/* Grid */}
         {filtered.length === 0 ? (
-          <div className="text-center py-20 text-gray-400">
+          <div className="text-center py-20 text-stone-400">
             <AlertCircle size={40} className="mx-auto mb-3 opacity-40" />
             <p className="font-medium">No products available yet.</p>
             <p className="text-sm mt-1">Check back soon!</p>

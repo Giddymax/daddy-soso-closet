@@ -9,16 +9,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        "sea-blue": {
-          DEFAULT: "#0077B6",
-          light: "#00B4D8",
-          dark: "#023E8A",
+        "warm-brown": {
+          DEFAULT: "#8B5E3C",
+          light: "#A67C5B",
+          dark: "#2C1A0E",
         },
         accent: {
-          yellow: "#D4AF37",
+          amber: "#C4954A",
         },
         neutral: {
-          light: "#F8F9FA",
+          light: "#FAF8F5",
         },
       },
       fontFamily: {

@@ -17,20 +17,20 @@ export default function Footer({
   tagline = "Fashion. Style. Elegance. Your premier boutique destination in Eastern Region, Ghana.",
 }: FooterProps) {
   return (
-    <footer className="bg-[#023E8A] text-white">
+    <footer className="bg-[#1C1208] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Brand */}
           <div>
-            <h3 className="font-playfair text-2xl font-bold text-[#D4AF37] mb-3">
+            <h3 className="font-playfair text-2xl font-bold text-[#C4954A] mb-3">
               Daddy SoSo Closet
             </h3>
-            <p className="text-white/70 text-sm leading-relaxed">{tagline}</p>
+            <p className="text-white/60 text-sm leading-relaxed">{tagline}</p>
             <div className="flex gap-3 mt-4">
-              <a href={instagramUrl || "#"} aria-label="Instagram" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#D4AF37] hover:text-[#023E8A] transition-colors">
+              <a href={instagramUrl || "#"} aria-label="Instagram" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#C4954A] transition-colors">
                 <Instagram size={16} />
               </a>
-              <a href={facebookUrl || "#"} aria-label="Facebook" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#D4AF37] hover:text-[#023E8A] transition-colors">
+              <a href={facebookUrl || "#"} aria-label="Facebook" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#C4954A] transition-colors">
                 <Facebook size={16} />
               </a>
               <a href={`https://wa.me/233${phone.replace(/^0/, "")}`} aria-label="WhatsApp" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#25D366] transition-colors">
@@ -43,37 +43,37 @@ export default function Footer({
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-semibold text-[#D4AF37] mb-3">Quick Links</h4>
-            <ul className="space-y-2 text-sm text-white/70">
-              <li><Link href="/tweapease" className="hover:text-[#D4AF37] transition-colors">Tweapease Branch</Link></li>
-              <li><Link href="/abaam" className="hover:text-[#D4AF37] transition-colors">Abaam Branch</Link></li>
-              <li><Link href="/#products" className="hover:text-[#D4AF37] transition-colors">Our Products</Link></li>
-              <li><Link href="/#contact" className="hover:text-[#D4AF37] transition-colors">Contact Us</Link></li>
-              <li><Link href="/auth/login" className="hover:text-[#D4AF37] transition-colors">Staff Dashboard</Link></li>
+            <h4 className="font-semibold text-[#C4954A] mb-3">Quick Links</h4>
+            <ul className="space-y-2 text-sm text-white/60">
+              <li><Link href="/tweapease" className="hover:text-[#C4954A] transition-colors">Tweapease Branch</Link></li>
+              <li><Link href="/abaam" className="hover:text-[#C4954A] transition-colors">Abaam Branch</Link></li>
+              <li><Link href="/#products" className="hover:text-[#C4954A] transition-colors">Our Products</Link></li>
+              <li><Link href="/#contact" className="hover:text-[#C4954A] transition-colors">Contact Us</Link></li>
+              <li><Link href="/auth/login" className="hover:text-[#C4954A] transition-colors">Staff Dashboard</Link></li>
             </ul>
           </div>
 
           {/* Contact */}
           <div>
-            <h4 className="font-semibold text-[#D4AF37] mb-3">Contact</h4>
-            <ul className="space-y-3 text-sm text-white/70">
+            <h4 className="font-semibold text-[#C4954A] mb-3">Contact</h4>
+            <ul className="space-y-3 text-sm text-white/60">
               <li className="flex items-center gap-2">
-                <Phone size={14} className="text-[#D4AF37] shrink-0" />
-                <a href={`tel:${phone}`} className="hover:text-[#D4AF37] transition-colors">{phone}</a>
+                <Phone size={14} className="text-[#C4954A] shrink-0" />
+                <a href={`tel:${phone}`} className="hover:text-[#C4954A] transition-colors">{phone}</a>
               </li>
               <li className="flex items-center gap-2">
-                <Mail size={14} className="text-[#D4AF37] shrink-0" />
-                <a href={`mailto:${email}`} className="hover:text-[#D4AF37] transition-colors text-xs">{email}</a>
+                <Mail size={14} className="text-[#C4954A] shrink-0" />
+                <a href={`mailto:${email}`} className="hover:text-[#C4954A] transition-colors text-xs">{email}</a>
               </li>
               <li className="flex items-start gap-2">
-                <MapPin size={14} className="text-[#D4AF37] shrink-0 mt-0.5" />
+                <MapPin size={14} className="text-[#C4954A] shrink-0 mt-0.5" />
                 <span>Tweapease &amp; Abaam, Kwaebibirim Municipal, Eastern Region, Ghana</span>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-white/10 mt-10 pt-6 text-center text-white/50 text-xs">
+        <div className="border-t border-white/10 mt-10 pt-6 text-center text-white/40 text-xs">
           © {new Date().getFullYear()} Daddy SoSo Closet. All rights reserved.
         </div>
       </div>

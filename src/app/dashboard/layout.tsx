@@ -30,7 +30,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const isAdmin = role === "admin";
 
-  // For admins with no branch set, load branches and show picker
   useEffect(() => {
     if (isAdmin && !branch) {
       supabase.from("branches").select("*").then(({ data }) => {
@@ -46,13 +45,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] flex">
+    <div className="min-h-screen bg-[#FAF8F5] flex">
       {/* Branch picker overlay for admin with no branch */}
       {showBranchPicker && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-[#023E8A]/80 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-[#2C1A0E]/80 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
-            <h2 className="font-playfair font-bold text-[#023E8A] text-xl mb-1">Select Branch</h2>
-            <p className="text-gray-500 text-sm mb-5">
+            <h2 className="font-playfair font-bold text-[#2C1A0E] text-xl mb-1">Select Branch</h2>
+            <p className="text-stone-500 text-sm mb-5">
               Choose which branch you&apos;re operating from for this session.
             </p>
             <div className="space-y-3">
@@ -60,18 +59,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <button
                   key={b.id}
                   onClick={() => selectBranch(b)}
-                  className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl border border-gray-200 hover:border-[#0077B6] hover:bg-[#0077B6]/5 transition-all group text-left"
+                  className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl border border-stone-200 hover:border-[#8B5E3C] hover:bg-[#8B5E3C]/5 transition-all group text-left"
                 >
                   <div>
-                    <p className="font-semibold text-[#023E8A] text-sm">{b.display_name}</p>
-                    <p className="text-xs text-gray-400 capitalize">{b.type.replace("_", " ")}</p>
+                    <p className="font-semibold text-[#2C1A0E] text-sm">{b.display_name}</p>
+                    <p className="text-xs text-stone-400 capitalize">{b.type.replace("_", " ")}</p>
                   </div>
-                  <ChevronRight size={16} className="text-gray-300 group-hover:text-[#0077B6] transition-colors" />
+                  <ChevronRight size={16} className="text-stone-300 group-hover:text-[#8B5E3C] transition-colors" />
                 </button>
               ))}
             </div>
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <Link href="/admin" className="block text-center text-xs text-[#0077B6] hover:underline font-medium">
+            <div className="mt-4 pt-4 border-t border-stone-100">
+              <Link href="/admin" className="block text-center text-xs text-[#8B5E3C] hover:underline font-medium">
                 Go back to Admin Panel
               </Link>
             </div>
@@ -82,7 +81,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-64 bg-[#023E8A] flex flex-col transition-transform duration-300 lg:translate-x-0 lg:static lg:flex",
+          "fixed inset-y-0 left-0 z-50 w-64 bg-[#2C1A0E] flex flex-col transition-transform duration-300 lg:translate-x-0 lg:static lg:flex",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
@@ -91,14 +90,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <h2 className="font-playfair font-bold text-white text-lg leading-tight">
             Daddy SoSo Closet
           </h2>
-          <span className="text-[#D4AF37] text-xs font-medium">Staff Portal</span>
+          <span className="text-[#C4954A] text-xs font-medium">Staff Portal</span>
         </div>
 
         {/* Staff info */}
         <div className="px-6 py-4 border-b border-white/10">
           <p className="text-white font-semibold text-sm">{staff?.full_name ?? "Staff"}</p>
           <div className="flex items-center gap-1.5 mt-1 flex-wrap">
-            <span className="inline-block bg-[#D4AF37] text-[#023E8A] text-xs font-bold px-2 py-0.5 rounded-full">
+            <span className="inline-block bg-[#C4954A] text-white text-xs font-bold px-2 py-0.5 rounded-full">
               {branch?.display_name ?? "No Branch"}
             </span>
             {isAdmin && (
@@ -127,7 +126,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               className={cn(
                 "flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors",
                 pathname === href
-                  ? "bg-[#D4AF37] text-[#023E8A]"
+                  ? "bg-[#C4954A] text-white"
                   : "text-white/70 hover:bg-white/10 hover:text-white"
               )}
             >
@@ -141,7 +140,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {isAdmin && (
             <Link
               href="/admin"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-[#D4AF37]/80 hover:bg-white/10 hover:text-[#D4AF37] transition-colors"
+              className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-[#C4954A]/80 hover:bg-white/10 hover:text-[#C4954A] transition-colors"
             >
               <BarChart2 size={18} /> Admin Panel
             </Link>
@@ -183,32 +182,32 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top bar */}
-        <header className="bg-white shadow-sm px-4 sm:px-6 h-16 flex items-center justify-between sticky top-0 z-30">
+        <header className="bg-white shadow-sm border-b border-stone-100 px-4 sm:px-6 h-16 flex items-center justify-between sticky top-0 z-30">
           <button
-            className="lg:hidden p-2 text-gray-500"
+            className="lg:hidden p-2 text-stone-500"
             onClick={() => setSidebarOpen(!sidebarOpen)}
           >
             {sidebarOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
-          <div className="text-sm font-semibold text-[#023E8A] hidden sm:block">
+          <div className="text-sm font-semibold text-[#2C1A0E] hidden sm:block">
             {navItems.find((n) => n.href === pathname)?.label ?? "Dashboard"}
           </div>
           <div className="flex items-center gap-3">
             {isAdmin && (
               <Link
                 href="/admin"
-                className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-[#D4AF37] hover:text-[#023E8A] transition-colors"
+                className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-[#C4954A] hover:text-[#2C1A0E] transition-colors"
               >
                 <BarChart2 size={14} /> Admin Panel
               </Link>
             )}
             <Link
               href="/"
-              className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-[#0077B6] hover:text-[#023E8A] transition-colors"
+              className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-[#8B5E3C] hover:text-[#2C1A0E] transition-colors"
             >
               <Home size={14} /> Main Site
             </Link>
-            <div className="text-xs text-gray-400">
+            <div className="text-xs text-stone-400">
               {new Date().toLocaleDateString("en-GH", {
                 timeZone: "Africa/Accra",
                 weekday: "long",

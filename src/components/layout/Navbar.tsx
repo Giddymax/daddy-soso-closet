@@ -21,7 +21,7 @@ export default function Navbar({ logoUrl }: NavbarProps) {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#0077B6] shadow-lg">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm border-b border-stone-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -35,11 +35,11 @@ export default function Navbar({ logoUrl }: NavbarProps) {
                 className="rounded-full object-cover"
               />
             ) : (
-              <span className="w-10 h-10 rounded-full bg-[#D4AF37] flex items-center justify-center font-playfair font-bold text-[#023E8A] text-lg">
+              <span className="w-10 h-10 rounded-full bg-[#2C1A0E] flex items-center justify-center font-playfair font-bold text-[#C4954A] text-lg">
                 D
               </span>
             )}
-            <span className="font-playfair font-bold text-white text-lg leading-tight hidden sm:block">
+            <span className="font-playfair font-bold text-[#2C1A0E] text-lg leading-tight hidden sm:block">
               Daddy SoSo Closet
             </span>
           </Link>
@@ -50,13 +50,13 @@ export default function Navbar({ logoUrl }: NavbarProps) {
               <Link
                 key={l.href}
                 href={l.href}
-                className="text-white/90 hover:text-[#D4AF37] font-medium transition-colors duration-200 text-sm"
+                className="text-stone-600 hover:text-[#8B5E3C] font-medium transition-colors duration-200 text-sm"
               >
                 {l.label}
               </Link>
             ))}
             {role && (
-              <span className="text-xs bg-[#D4AF37] text-[#023E8A] px-2 py-1 rounded-full font-bold">
+              <span className="text-xs bg-[#C4954A] text-white px-2 py-1 rounded-full font-bold">
                 {role === "admin" ? "Admin" : "Staff"}
               </span>
             )}
@@ -66,7 +66,7 @@ export default function Navbar({ logoUrl }: NavbarProps) {
           <div className="hidden md:flex items-center gap-3">
             <Link
               href="/auth/login"
-              className="flex items-center gap-2 bg-[#D4AF37] text-[#023E8A] px-4 py-2 rounded-lg font-bold text-sm hover:bg-[#b8962e] transition-colors duration-200"
+              className="flex items-center gap-2 bg-[#2C1A0E] text-white px-4 py-2 rounded-full font-bold text-sm hover:bg-[#8B5E3C] transition-colors duration-200"
             >
               <ShoppingBag size={16} />
               Go to Dashboard
@@ -75,7 +75,7 @@ export default function Navbar({ logoUrl }: NavbarProps) {
 
           {/* Mobile Hamburger */}
           <button
-            className="md:hidden text-white p-2"
+            className="md:hidden text-[#2C1A0E] p-2"
             onClick={() => setOpen(!open)}
             aria-label="Toggle menu"
           >
@@ -86,14 +86,14 @@ export default function Navbar({ logoUrl }: NavbarProps) {
 
       {/* Mobile Drawer */}
       {open && (
-        <div className="md:hidden bg-[#023E8A] border-t border-[#00B4D8]/30 animate-fadeIn">
+        <div className="md:hidden bg-white border-t border-stone-100 animate-fadeIn">
           <div className="px-4 py-4 flex flex-col gap-3">
             {links.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className="text-white/90 hover:text-[#D4AF37] font-medium py-2 border-b border-white/10 transition-colors"
+                className="text-stone-600 hover:text-[#8B5E3C] font-medium py-2 border-b border-stone-100 transition-colors"
               >
                 {l.label}
               </Link>
@@ -101,7 +101,7 @@ export default function Navbar({ logoUrl }: NavbarProps) {
             <Link
               href="/auth/login"
               onClick={() => setOpen(false)}
-              className="flex items-center justify-center gap-2 bg-[#D4AF37] text-[#023E8A] px-4 py-3 rounded-lg font-bold mt-2"
+              className="flex items-center justify-center gap-2 bg-[#2C1A0E] text-white px-4 py-3 rounded-full font-bold mt-2"
             >
               <ShoppingBag size={16} />
               Go to Dashboard
