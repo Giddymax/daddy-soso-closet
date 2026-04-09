@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
       branchName, receiptNumber, items, total, staffName, paymentMethod, dailyTotals,
     });
 
-    const adminPhone = process.env.NEXT_PUBLIC_ADMIN_PHONE ?? "0594299293";
+    const adminPhone = process.env.ARKESEL_RECIPIENT_PHONE ?? "0552315639";
     const result = await sendSMS({ to: adminPhone, message });
 
     if (!result.success) {

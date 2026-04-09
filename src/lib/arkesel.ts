@@ -17,17 +17,19 @@ export async function sendSMS(payload: SMSPayload): Promise<SMSResult> {
         "api-key": process.env.ARKESEL_API_KEY || "",
       },
       body: JSON.stringify({
-        sender: "DaddySoSo",
+        sender: process.env.ARKESEL_SENDER_ID || "Daddy-Soso",
         message: payload.message,
         recipients: [payload.to],
       }),
     });
 
+    const data = await response.json().catch(() => response.text());
     if (!response.ok) {
-      const err = await response.text();
-      return { success: false, error: err };
+      console.error("Arkesel error:", JSON.stringify(data));
+      return { success: false, error: JSON.stringify(data) };
     }
 
+    console.log("Arkesel response:", JSON.stringify(data));
     return { success: true };
   } catch (error) {
     const msg = error instanceof Error ? error.message : "Unknown error";
