@@ -189,21 +189,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           >
             {sidebarOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
-          <div className="text-sm font-semibold text-[#2C1A0E] hidden sm:block">
+          <div className="text-sm font-semibold text-[#023E8A] hidden sm:block">
             {navItems.find((n) => n.href === pathname)?.label ?? "Dashboard"}
           </div>
           <div className="flex items-center gap-3">
             {isAdmin && (
               <Link
                 href="/admin"
-                className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-[#C4954A] hover:text-[#2C1A0E] transition-colors"
+                className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-[#0077B6] hover:text-[#023E8A] transition-colors"
               >
                 <BarChart2 size={14} /> Admin Panel
               </Link>
             )}
             <Link
               href="/"
-              className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-[#8B5E3C] hover:text-[#2C1A0E] transition-colors"
+              className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-[#8B5E3C] hover:text-[#023E8A] transition-colors"
             >
               <Home size={14} /> Main Site
             </Link>

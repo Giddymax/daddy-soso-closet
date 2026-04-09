@@ -71,15 +71,15 @@ export default function StaffSalesPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="font-playfair text-2xl font-bold text-[#2C1A0E]">Sales</h1>
-          <p className="text-stone-500 text-sm">{branch?.display_name}</p>
+          <h1 className="font-playfair text-2xl font-bold text-[#023E8A]">Sales</h1>
+          <p className="text-gray-500 text-sm">{branch?.display_name}</p>
         </div>
         <div className="flex items-center gap-2">
           <input
             type="date"
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
-            className="px-4 py-2 border border-stone-200 rounded-xl text-sm focus:ring-2 focus:ring-[#8B5E3C] focus:outline-none"
+            className="px-4 py-2 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#0077B6] focus:outline-none"
           />
           {dateFilter && (
             <button
@@ -95,36 +95,36 @@ export default function StaffSalesPage() {
       <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-[#FAF8F5]">
+            <thead className="bg-[#F8F9FA]">
               <tr>
-                <th className="text-left px-4 py-3 text-stone-500 font-medium">Receipt #</th>
-                <th className="text-left px-4 py-3 text-stone-500 font-medium hidden sm:table-cell">Date & Time</th>
-                <th className="text-left px-4 py-3 text-stone-500 font-medium hidden md:table-cell">Cashier</th>
-                <th className="text-left px-4 py-3 text-stone-500 font-medium hidden lg:table-cell">Customer</th>
-                <th className="text-center px-4 py-3 text-stone-500 font-medium">Items</th>
-                <th className="text-right px-4 py-3 text-stone-500 font-medium">Total</th>
-                <th className="text-center px-4 py-3 text-stone-500 font-medium hidden sm:table-cell">Payment</th>
+                <th className="text-left px-4 py-3 text-gray-500 font-medium">Receipt #</th>
+                <th className="text-left px-4 py-3 text-gray-500 font-medium hidden sm:table-cell">Date & Time</th>
+                <th className="text-left px-4 py-3 text-gray-500 font-medium hidden md:table-cell">Cashier</th>
+                <th className="text-left px-4 py-3 text-gray-500 font-medium hidden lg:table-cell">Customer</th>
+                <th className="text-center px-4 py-3 text-gray-500 font-medium">Items</th>
+                <th className="text-right px-4 py-3 text-gray-500 font-medium">Total</th>
+                <th className="text-center px-4 py-3 text-gray-500 font-medium hidden sm:table-cell">Payment</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-stone-50">
+            <tbody className="divide-y divide-gray-50">
               {loading
                 ? Array.from({ length: 6 }).map((_, i) => (
                     <tr key={i}><td colSpan={8} className="px-4 py-3"><div className="skeleton h-4 rounded" /></td></tr>
                   ))
                 : sales.map((sale) => (
-                    <tr key={sale.id} className="hover:bg-stone-50 transition-colors">
-                      <td className="px-4 py-3 font-mono text-xs text-[#8B5E3C] font-semibold">{sale.receipt_number}</td>
-                      <td className="px-4 py-3 text-stone-400 text-xs hidden sm:table-cell">{formatGhanaDateTime(sale.created_at)}</td>
-                      <td className="px-4 py-3 text-stone-500 text-xs hidden md:table-cell">{(sale.staff as { full_name: string } | null)?.full_name ?? staff?.full_name ?? "—"}</td>
-                      <td className="px-4 py-3 text-stone-500 text-xs hidden lg:table-cell">
+                    <tr key={sale.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-4 py-3 font-mono text-xs text-[#0077B6] font-semibold">{sale.receipt_number}</td>
+                      <td className="px-4 py-3 text-gray-400 text-xs hidden sm:table-cell">{formatGhanaDateTime(sale.created_at)}</td>
+                      <td className="px-4 py-3 text-gray-500 text-xs hidden md:table-cell">{(sale.staff as { full_name: string } | null)?.full_name ?? staff?.full_name ?? "—"}</td>
+                      <td className="px-4 py-3 text-gray-500 text-xs hidden lg:table-cell">
                         {sale.customer_name
-                          ? <span>{sale.customer_name}{sale.customer_phone ? <span className="text-stone-400 ml-1">· {sale.customer_phone}</span> : null}</span>
-                          : <span className="text-stone-300 italic">—</span>
+                          ? <span>{sale.customer_name}{sale.customer_phone ? <span className="text-gray-400 ml-1">· {sale.customer_phone}</span> : null}</span>
+                          : <span className="text-gray-300 italic">—</span>
                         }
                       </td>
-                      <td className="px-4 py-3 text-center text-stone-600 text-sm">{sale.sale_items.length}</td>
-                      <td className="px-4 py-3 text-right font-bold text-[#2C1A0E]">{formatCurrency(Number(sale.total_amount))}</td>
+                      <td className="px-4 py-3 text-center text-gray-600 text-sm">{sale.sale_items.length}</td>
+                      <td className="px-4 py-3 text-right font-bold text-[#023E8A]">{formatCurrency(Number(sale.total_amount))}</td>
                       <td className="px-4 py-3 text-center hidden sm:table-cell">
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
                           sale.payment_method === "cash" ? "bg-green-100 text-green-700" :
@@ -135,7 +135,7 @@ export default function StaffSalesPage() {
                       <td className="px-4 py-3">
                         <button
                           onClick={() => setSelectedSale(sale)}
-                          className="flex items-center gap-1 bg-[#8B5E3C]/10 text-[#8B5E3C] px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-[#8B5E3C] hover:text-white transition-colors ml-auto"
+                          className="flex items-center gap-1 bg-[#0077B6]/10 text-[#0077B6] px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-[#0077B6] hover:text-white transition-colors ml-auto"
                           title="Print receipt"
                         >
                           <Printer size={12} /> Print
@@ -148,7 +148,7 @@ export default function StaffSalesPage() {
           </table>
 
           {!loading && sales.length === 0 && (
-            <div className="text-center py-16 text-stone-400">
+            <div className="text-center py-16 text-gray-400">
               <ReceiptText size={36} className="mx-auto mb-2 opacity-30" />
               <p className="text-sm">No sales found{dateFilter ? " for this date" : ""}.</p>
             </div>
