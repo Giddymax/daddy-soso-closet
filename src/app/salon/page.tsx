@@ -298,6 +298,7 @@ export default async function SalonPage() {
         phone={s.phone_number}
         email={s.email}
         tagline={s.footer_tagline}
+        theme="pink"
       />
     </div>
   );
