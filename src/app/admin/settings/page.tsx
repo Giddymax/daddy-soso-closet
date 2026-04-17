@@ -44,6 +44,9 @@ const SETTINGS_KEYS = [
   { key: "abaam_salon_featured_2",   label: "Abaam Salon Featured Image 2", type: "image",    bucket: "site-assets", group: "Abaam Salon" },
   { key: "abaam_salon_featured_3",   label: "Abaam Salon Featured Image 3", type: "image",    bucket: "site-assets", group: "Abaam Salon" },
 
+  // ── Login Page ────────────────────────────────────────────
+  { key: "login_sidebar_url", label: "Sign-In Page Sidebar Image", type: "image", bucket: "site-assets", group: "Login Page" },
+
   // ── Salon General ─────────────────────────────────────────
   { key: "salon_hero_url",   label: "Salon Hero Image",  type: "image", bucket: "site-assets", group: "Salon General" },
   { key: "salon_about_url",  label: "Salon About Image", type: "image", bucket: "site-assets", group: "Salon General" },
@@ -57,7 +60,7 @@ const SETTINGS_KEYS = [
   { key: "salon_gallery_6", label: "Salon Gallery Photo 6", type: "image", bucket: "site-assets", group: "Salon Gallery" },
 ] as const;
 
-const GROUPS = ["Branding", "Contact", "WhatsApp Numbers", "Social", "Homepage", "Branches", "Abaam Salon", "Salon General", "Salon Gallery"] as const;
+const GROUPS = ["Branding", "Contact", "WhatsApp Numbers", "Social", "Homepage", "Branches", "Login Page", "Abaam Salon", "Salon General", "Salon Gallery"] as const;
 
 const SALON_SERVICES_CONFIG = [
   { name: "Hair Relaxing",            imgKey: "salon_service_relax_url",     descKey: "salon_service_relax_desc",     priceKey: "salon_service_relax_price",     defaultPrice: "GH₵ 80+" },
@@ -174,7 +177,7 @@ export default function AdminSettingsPage() {
                 />
                 <div className="flex items-center justify-between mt-2">
                   {saved[svc.descKey] && <span className="text-green-600 text-xs flex items-center gap-1"><Check size={12} /> Saved!</span>}
-                  <button onClick={() => saveSetting(svc.descKey, settings[svc.descKey] ?? "")}
+                  <button type="button" onClick={() => saveSetting(svc.descKey, settings[svc.descKey] ?? "")}
                     className="flex items-center gap-1.5 bg-[#0077B6] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#023E8A] transition-colors ml-auto">
                     <Save size={13} /> Save
                   </button>
@@ -193,7 +196,7 @@ export default function AdminSettingsPage() {
                 />
                 <div className="flex items-center justify-between mt-2">
                   {saved[svc.priceKey] && <span className="text-green-600 text-xs flex items-center gap-1"><Check size={12} /> Saved!</span>}
-                  <button onClick={() => saveSetting(svc.priceKey, settings[svc.priceKey] ?? "")}
+                  <button type="button" onClick={() => saveSetting(svc.priceKey, settings[svc.priceKey] ?? "")}
                     className="flex items-center gap-1.5 bg-[#0077B6] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#023E8A] transition-colors ml-auto">
                     <Save size={13} /> Save
                   </button>
@@ -249,7 +252,7 @@ export default function AdminSettingsPage() {
                       />
                       <div className="flex items-center justify-between mt-2">
                         {saved[key] && <span className="text-green-600 text-xs flex items-center gap-1"><Check size={12} /> Saved!</span>}
-                        <button onClick={() => saveSetting(key, settings[key] ?? "")}
+                        <button type="button" onClick={() => saveSetting(key, settings[key] ?? "")}
                           className="flex items-center gap-1.5 bg-[#0077B6] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#023E8A] transition-colors ml-auto">
                           <Save size={13} /> Save
                         </button>
@@ -265,7 +268,7 @@ export default function AdminSettingsPage() {
                       />
                       <div className="flex items-center justify-between mt-2">
                         {saved[key] && <span className="text-green-600 text-xs flex items-center gap-1"><Check size={12} /> Saved!</span>}
-                        <button onClick={() => saveSetting(key, settings[key] ?? "")}
+                        <button type="button" onClick={() => saveSetting(key, settings[key] ?? "")}
                           className="flex items-center gap-1.5 bg-[#0077B6] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#023E8A] transition-colors ml-auto">
                           <Save size={13} /> Save
                         </button>

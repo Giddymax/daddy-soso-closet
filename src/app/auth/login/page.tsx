@@ -1,16 +1,29 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, ArrowLeft, Loader2 } from "lucide-react";
 import { loginSchema, type LoginFormValues } from "@/lib/validators";
 import { useAuth } from "@/hooks/useAuth";
+import { createBrowserClient } from "@/lib/supabase";
 
 export default function LoginPage() {
   const { signIn, isLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [sidebarImage, setSidebarImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const supabase = createBrowserClient();
+    supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "login_sidebar_url")
+      .single()
+      .then(({ data }) => { if (data?.value) setSidebarImage(data.value); });
+  }, []);
 
   const {
     register,
@@ -38,10 +51,22 @@ export default function LoginPage() {
     <div className="min-h-screen flex">
       {/* Left panel – branding */}
       <div className="hidden lg:flex w-1/2 bg-[#023E8A] flex-col items-center justify-center p-12 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 w-40 h-40 rounded-full border-4 border-[#D4AF37]" />
-          <div className="absolute bottom-20 right-10 w-60 h-60 rounded-full border-4 border-[#D4AF37]" />
-        </div>
+        {sidebarImage ? (
+          <Image
+            src={sidebarImage}
+            alt="Sign-in sidebar"
+            fill
+            className="object-cover"
+            sizes="50vw"
+            priority
+          />
+        ) : (
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-10 left-10 w-40 h-40 rounded-full border-4 border-[#D4AF37]" />
+            <div className="absolute bottom-20 right-10 w-60 h-60 rounded-full border-4 border-[#D4AF37]" />
+          </div>
+        )}
+        <div className="absolute inset-0 bg-[#023E8A]/60" />
         <div className="relative z-10 text-center">
           <div className="w-20 h-20 bg-[#D4AF37] rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
             <span className="font-playfair font-bold text-[#023E8A] text-3xl">D</span>

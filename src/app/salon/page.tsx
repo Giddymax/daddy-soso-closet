@@ -43,16 +43,16 @@ export default async function SalonPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* ─── Header ─── */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#023E8A] shadow-lg">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#9D174D] shadow-lg">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/abaam" className="flex items-center gap-2 text-white/80 hover:text-white transition-colors">
             <ArrowLeft size={18} />
             <span className="text-sm font-medium">Back to Abaam Branch</span>
           </Link>
-          <span className="font-playfair font-bold text-[#D4AF37] hidden sm:block">
+          <span className="font-playfair font-bold text-[#EAB308] hidden sm:block">
             Daddy SoSo Closet — Salon
           </span>
-          <a href={`tel:${phone}`} className="flex items-center gap-1.5 bg-[#D4AF37] text-[#023E8A] px-3 py-1.5 rounded-lg font-bold text-xs hover:bg-[#b8962e] transition-colors">
+          <a href={`tel:${phone}`} className="flex items-center gap-1.5 bg-[#EAB308] text-[#9D174D] px-3 py-1.5 rounded-lg font-bold text-xs hover:bg-yellow-300 transition-colors">
             <Phone size={14} /> Call Us
           </a>
         </div>
@@ -61,7 +61,7 @@ export default async function SalonPage() {
       <main className="pt-16">
         {/* ─── Hero ─── */}
         <section className="relative h-[80vh] min-h-[500px] flex items-center justify-center overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#023E8A] to-[#0077B6]">
+          <div className="absolute inset-0 bg-gradient-to-br from-[#9D174D] to-[#EC4899]">
             {s.salon_hero_url && (
               <SupabaseImage
                 src={s.salon_hero_url}
@@ -73,19 +73,19 @@ export default async function SalonPage() {
               />
             )}
           </div>
-          <div className="absolute inset-0 bg-gradient-to-r from-[#023E8A]/80 via-[#0077B6]/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#9D174D]/80 via-[#EC4899]/60 to-transparent" />
           <div className="relative z-10 text-center px-4 max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-semibold px-4 py-1.5 rounded-full mb-6 backdrop-blur-sm">
+            <div className="inline-flex items-center gap-2 bg-[#EAB308]/20 border border-[#EAB308]/40 text-[#EAB308] text-xs font-semibold px-4 py-1.5 rounded-full mb-6 backdrop-blur-sm">
               <Scissors size={12} /> Abaam Branch Salon
             </div>
             <h1 className="font-playfair text-5xl sm:text-6xl md:text-7xl font-bold text-white leading-tight mb-4">
-              Look Your <span className="block text-[#D4AF37]">Very Best</span>
+              Look Your <span className="block text-[#EAB308]">Very Best</span>
             </h1>
             <p className="text-white/80 text-lg sm:text-xl mb-10">
               Premium hair care &amp; styling services crafted with skill and passion.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="#book" className="bg-[#D4AF37] text-[#023E8A] px-8 py-4 rounded-xl font-bold text-lg hover:bg-white transition-all duration-300 shadow-xl hover:-translate-y-0.5">
+              <a href="#book" className="bg-[#EAB308] text-[#9D174D] px-8 py-4 rounded-xl font-bold text-lg hover:bg-yellow-300 transition-all duration-300 shadow-xl hover:-translate-y-0.5">
                 Book Appointment
               </a>
               <a href="#services" className="bg-white/10 backdrop-blur-sm text-white border border-white/30 px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition-all duration-300">
@@ -96,8 +96,8 @@ export default async function SalonPage() {
         </section>
 
         {/* ─── Info strip ─── */}
-        <section className="bg-[#D4AF37] py-6">
-          <div className="max-w-7xl mx-auto px-4 flex flex-wrap justify-center gap-8 text-[#023E8A]">
+        <section className="bg-[#EAB308] py-6">
+          <div className="max-w-7xl mx-auto px-4 flex flex-wrap justify-center gap-8 text-[#9D174D]">
             {[
               { icon: <Star size={18} />, text: "Premium Quality" },
               { icon: <Heart size={18} />, text: "Made with Care" },
@@ -115,7 +115,7 @@ export default async function SalonPage() {
         <section className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-              <div className="relative h-96 rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-[#0077B6]/10 to-[#023E8A]/20">
+              <div className="relative h-96 rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-[#EC4899]/10 to-[#9D174D]/20">
                 {s.salon_about_url ? (
                   <SupabaseImage
                     src={s.salon_about_url}
@@ -126,7 +126,7 @@ export default async function SalonPage() {
                   />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center text-[#0077B6]/40">
+                    <div className="text-center text-[#EC4899]/40">
                       <Scissors size={56} />
                       <p className="mt-2 text-sm font-medium">Upload salon about image in settings</p>
                     </div>
@@ -134,9 +134,9 @@ export default async function SalonPage() {
                 )}
               </div>
               <div>
-                <p className="text-[#0077B6] font-semibold text-sm uppercase tracking-widest mb-2">About Us</p>
-                <h2 className="font-playfair text-4xl font-bold text-[#023E8A] mb-4">Your Beauty, Our Passion</h2>
-                <div className="w-16 h-1 bg-[#D4AF37] rounded-full mb-6" />
+                <p className="text-[#EC4899] font-semibold text-sm uppercase tracking-widest mb-2">About Us</p>
+                <h2 className="font-playfair text-4xl font-bold text-[#9D174D] mb-4">Your Beauty, Our Passion</h2>
+                <div className="w-16 h-1 bg-[#EAB308] rounded-full mb-6" />
                 <p className="text-gray-600 leading-relaxed mb-4">
                   {s.abaam_salon_description ||
                     "Nestled within Daddy SoSo Closet's Abaam Branch, our salon brings professional beauty services to the heart of the Eastern Region. From protective styles to glamorous blowouts, every client leaves feeling confident and beautiful."}
@@ -144,7 +144,7 @@ export default async function SalonPage() {
                 <div className="flex flex-wrap gap-4">
                   {[["5+", "Years Experience"], ["500+", "Happy Clients"], ["6+", "Services"]].map(([stat, label]) => (
                     <div key={label} className="text-center">
-                      <div className="font-playfair text-3xl font-bold text-[#D4AF37]">{stat}</div>
+                      <div className="font-playfair text-3xl font-bold text-[#EAB308]">{stat}</div>
                       <div className="text-sm text-gray-500">{label}</div>
                     </div>
                   ))}
@@ -155,17 +155,17 @@ export default async function SalonPage() {
         </section>
 
         {/* ─── Services ─── */}
-        <section id="services" className="py-20 bg-[#F8F9FA]">
+        <section id="services" className="py-20 bg-[#FDF2F8]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <p className="text-[#0077B6] font-semibold text-sm uppercase tracking-widest mb-2">What We Offer</p>
-              <h2 className="font-playfair text-4xl font-bold text-[#023E8A]">Our Services</h2>
-              <div className="w-16 h-1 bg-[#D4AF37] mx-auto mt-3 rounded-full" />
+              <p className="text-[#EC4899] font-semibold text-sm uppercase tracking-widest mb-2">What We Offer</p>
+              <h2 className="font-playfair text-4xl font-bold text-[#9D174D]">Our Services</h2>
+              <div className="w-16 h-1 bg-[#EAB308] mx-auto mt-3 rounded-full" />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {servicesMeta.map((service) => (
-                <div key={service.imgKey} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
-                  <div className="relative h-48 bg-gradient-to-br from-[#0077B6]/10 to-[#023E8A]/20 overflow-hidden">
+                <div key={service.imgKey} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-pink-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
+                  <div className="relative h-48 bg-gradient-to-br from-[#EC4899]/10 to-[#9D174D]/20 overflow-hidden">
                     {s[service.imgKey] ? (
                       <SupabaseImage
                         src={s[service.imgKey]}
@@ -176,7 +176,7 @@ export default async function SalonPage() {
                       />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-center text-[#0077B6]/30">
+                        <div className="text-center text-[#EC4899]/30">
                           <Sparkles size={36} />
                           <p className="text-xs mt-1">Upload in settings</p>
                         </div>
@@ -184,17 +184,17 @@ export default async function SalonPage() {
                     )}
                   </div>
                   <div className="p-6">
-                    <h3 className="font-playfair text-xl font-bold text-[#023E8A] mb-2">{service.name}</h3>
+                    <h3 className="font-playfair text-xl font-bold text-[#9D174D] mb-2">{service.name}</h3>
                     <p className="text-gray-500 text-sm leading-relaxed mb-4">
                       {s[service.descKey] || service.defaultDesc}
                     </p>
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-[#D4AF37] text-lg">
+                      <span className="font-bold text-[#EAB308] text-lg">
                         {s[service.priceKey] || service.defaultPrice}
                       </span>
                       <span className="text-xs text-gray-400 flex items-center gap-1"><Clock size={12} /> {service.duration}</span>
                     </div>
-                    <a href="#book" className="mt-4 block text-center bg-[#0077B6]/10 text-[#0077B6] py-2 rounded-lg text-sm font-semibold hover:bg-[#0077B6] hover:text-white transition-colors duration-200">
+                    <a href="#book" className="mt-4 block text-center bg-[#EC4899]/10 text-[#EC4899] py-2 rounded-lg text-sm font-semibold hover:bg-[#EC4899] hover:text-white transition-colors duration-200">
                       Book This Service
                     </a>
                   </div>
@@ -208,13 +208,13 @@ export default async function SalonPage() {
         <section className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <p className="text-[#0077B6] font-semibold text-sm uppercase tracking-widest mb-2">Our Work</p>
-              <h2 className="font-playfair text-4xl font-bold text-[#023E8A]">Gallery</h2>
-              <div className="w-16 h-1 bg-[#D4AF37] mx-auto mt-3 rounded-full" />
+              <p className="text-[#EC4899] font-semibold text-sm uppercase tracking-widest mb-2">Our Work</p>
+              <h2 className="font-playfair text-4xl font-bold text-[#9D174D]">Gallery</h2>
+              <div className="w-16 h-1 bg-[#EAB308] mx-auto mt-3 rounded-full" />
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {galleryKeys.map((key, idx) => (
-                <div key={key} className="relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-[#0077B6]/10 to-[#023E8A]/20 group cursor-pointer">
+                <div key={key} className="relative aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-[#EC4899]/10 to-[#9D174D]/20 group cursor-pointer">
                   {s[key] ? (
                     <SupabaseImage
                       src={s[key]}
@@ -224,14 +224,14 @@ export default async function SalonPage() {
                       sizes="(max-width: 768px) 50vw, 33vw"
                     />
                   ) : (
-                    <div className="absolute inset-0 flex items-center justify-center border-2 border-dashed border-[#0077B6]/20 rounded-2xl">
-                      <div className="text-center text-[#0077B6]/30">
+                    <div className="absolute inset-0 flex items-center justify-center border-2 border-dashed border-[#EC4899]/20 rounded-2xl">
+                      <div className="text-center text-[#EC4899]/30">
                         <Sparkles size={28} />
                         <p className="text-xs mt-1">Gallery photo {idx + 1}</p>
                       </div>
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-[#023E8A]/0 group-hover:bg-[#023E8A]/30 transition-colors duration-300" />
+                  <div className="absolute inset-0 bg-[#9D174D]/0 group-hover:bg-[#9D174D]/30 transition-colors duration-300" />
                 </div>
               ))}
             </div>
@@ -239,12 +239,12 @@ export default async function SalonPage() {
         </section>
 
         {/* ─── Booking Form ─── */}
-        <section id="book" className="py-20 bg-[#023E8A]">
+        <section id="book" className="py-20 bg-[#9D174D]">
           <div className="max-w-3xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-12">
-              <p className="text-[#D4AF37] font-semibold text-sm uppercase tracking-widest mb-2">Reserve Your Spot</p>
+              <p className="text-[#EAB308] font-semibold text-sm uppercase tracking-widest mb-2">Reserve Your Spot</p>
               <h2 className="font-playfair text-4xl font-bold text-white">Book an Appointment</h2>
-              <div className="w-16 h-1 bg-[#D4AF37] mx-auto mt-3 rounded-full" />
+              <div className="w-16 h-1 bg-[#EAB308] mx-auto mt-3 rounded-full" />
             </div>
             <BookingForm
               services={servicesMeta.map((sv) => ({
@@ -258,33 +258,33 @@ export default async function SalonPage() {
         </section>
 
         {/* ─── Contact / Location ─── */}
-        <section className="py-20 bg-[#F8F9FA]">
+        <section className="py-20 bg-[#FDF2F8]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
-              <p className="text-[#0077B6] font-semibold text-sm uppercase tracking-widest mb-2">Find Us</p>
-              <h2 className="font-playfair text-4xl font-bold text-[#023E8A]">Visit the Salon</h2>
-              <div className="w-16 h-1 bg-[#D4AF37] mx-auto mt-3 rounded-full" />
+              <p className="text-[#EC4899] font-semibold text-sm uppercase tracking-widest mb-2">Find Us</p>
+              <h2 className="font-playfair text-4xl font-bold text-[#9D174D]">Visit the Salon</h2>
+              <div className="w-16 h-1 bg-[#EAB308] mx-auto mt-3 rounded-full" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center">
-                <div className="w-12 h-12 bg-[#0077B6]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <MapPin size={22} className="text-[#0077B6]" />
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-pink-100 text-center">
+                <div className="w-12 h-12 bg-[#EC4899]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <MapPin size={22} className="text-[#EC4899]" />
                 </div>
-                <h3 className="font-semibold text-[#023E8A] mb-1">Location</h3>
+                <h3 className="font-semibold text-[#9D174D] mb-1">Location</h3>
                 <p className="text-gray-500 text-sm">Abaam, Kwaebibirim Municipal<br />Eastern Region, Ghana</p>
               </div>
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center">
-                <div className="w-12 h-12 bg-[#0077B6]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Phone size={22} className="text-[#0077B6]" />
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-pink-100 text-center">
+                <div className="w-12 h-12 bg-[#EC4899]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Phone size={22} className="text-[#EC4899]" />
                 </div>
-                <h3 className="font-semibold text-[#023E8A] mb-1">Phone</h3>
-                <a href={`tel:${phone}`} className="text-[#0077B6] text-sm font-medium hover:underline">{phone}</a>
+                <h3 className="font-semibold text-[#9D174D] mb-1">Phone</h3>
+                <a href={`tel:${phone}`} className="text-[#EC4899] text-sm font-medium hover:underline">{phone}</a>
               </div>
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center">
-                <div className="w-12 h-12 bg-[#0077B6]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Clock size={22} className="text-[#0077B6]" />
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-pink-100 text-center">
+                <div className="w-12 h-12 bg-[#EC4899]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Clock size={22} className="text-[#EC4899]" />
                 </div>
-                <h3 className="font-semibold text-[#023E8A] mb-1">Hours</h3>
+                <h3 className="font-semibold text-[#9D174D] mb-1">Hours</h3>
                 <p className="text-gray-500 text-sm">Mon – Sat<br />8:00 AM – 6:00 PM</p>
               </div>
             </div>
