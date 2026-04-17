@@ -41,7 +41,7 @@ export default function HeroSection({ heroImageUrl, tagline }: HeroSectionProps)
       {/* Content */}
       <div className="relative z-10 text-center px-4 sm:px-6 max-w-4xl mx-auto">
         <div
-          className="inline-flex items-center gap-2 bg-[#C4954A]/20 border border-[#C4954A]/40 text-[#C4954A] text-xs font-semibold px-4 py-1.5 rounded-full mb-6 backdrop-blur-sm animate-fadeIn"
+          className="inline-flex items-center gap-2 bg-[#C4954A]/20 border border-[#C4954A]/40 text-[#4B1E0E] text-xs font-semibold px-4 py-1.5 rounded-full mb-6 backdrop-blur-sm animate-fadeIn"
         >
           <MapPin size={12} />
           Kwaebibirim Municipal, Eastern Region, Ghana
