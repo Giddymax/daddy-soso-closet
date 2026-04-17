@@ -7,7 +7,7 @@ interface FooterProps {
   phone?: string;
   email?: string;
   tagline?: string;
-  theme?: "default" | "pink";
+  theme?: "default" | "pink" | "emerald";
 }
 
 export default function Footer({
@@ -18,11 +18,10 @@ export default function Footer({
   tagline = "Fashion. Style. Elegance. Your premier boutique destination in Eastern Region, Ghana.",
   theme = "default",
 }: FooterProps) {
-  const pink = theme === "pink";
-  const bg         = pink ? "bg-[#500724]"         : "bg-[#1C1208]";
-  const accent     = pink ? "text-[#EC4899]"        : "text-[#C4954A]";
-  const accentBg   = pink ? "hover:bg-[#EC4899]"   : "hover:bg-[#C4954A]";
-  const hoverAccent = pink ? "hover:text-[#EC4899]" : "hover:text-[#C4954A]";
+  const bg          = theme === "pink" ? "bg-[#500724]" : theme === "emerald" ? "bg-[#022c22]" : "bg-[#1C1208]";
+  const accent      = theme === "pink" ? "text-[#EC4899]" : theme === "emerald" ? "text-[#10B981]" : "text-[#C4954A]";
+  const accentBg    = theme === "pink" ? "hover:bg-[#EC4899]" : theme === "emerald" ? "hover:bg-[#10B981]" : "hover:bg-[#C4954A]";
+  const hoverAccent = theme === "pink" ? "hover:text-[#EC4899]" : theme === "emerald" ? "hover:text-[#10B981]" : "hover:text-[#C4954A]";
 
   return (
     <footer className={`${bg} text-white`}>
