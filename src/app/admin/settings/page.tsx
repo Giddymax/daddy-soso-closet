@@ -15,6 +15,11 @@ const SETTINGS_KEYS = [
   { key: "email",            label: "Email Address",             type: "text",     placeholder: "example@gmail.com", group: "Contact" },
   { key: "map_embed_url",    label: "Google Maps Embed URL",     type: "textarea", placeholder: "Paste the Google Maps embed src URL here…", group: "Contact" },
 
+  // ── WhatsApp Numbers ──────────────────────────────────────
+  { key: "whatsapp_number",          label: "Main / Admin WhatsApp",      type: "text", placeholder: "0594299293", group: "WhatsApp Numbers" },
+  { key: "tweapease_whatsapp",       label: "Tweapease Branch WhatsApp",  type: "text", placeholder: "0594299293", group: "WhatsApp Numbers" },
+  { key: "abaam_whatsapp",           label: "Abaam Branch WhatsApp",      type: "text", placeholder: "0594299293", group: "WhatsApp Numbers" },
+
   // ── Social ────────────────────────────────────────────────
   { key: "instagram_url",    label: "Instagram Link",            type: "text",     placeholder: "https://instagram.com/yourpage", group: "Social" },
   { key: "facebook_url",     label: "Facebook Link",             type: "text",     placeholder: "https://facebook.com/yourpage", group: "Social" },
@@ -52,7 +57,7 @@ const SETTINGS_KEYS = [
   { key: "salon_gallery_6", label: "Salon Gallery Photo 6", type: "image", bucket: "site-assets", group: "Salon Gallery" },
 ] as const;
 
-const GROUPS = ["Branding", "Contact", "Social", "Homepage", "Branches", "Abaam Salon", "Salon General", "Salon Gallery"] as const;
+const GROUPS = ["Branding", "Contact", "WhatsApp Numbers", "Social", "Homepage", "Branches", "Abaam Salon", "Salon General", "Salon Gallery"] as const;
 
 const SALON_SERVICES_CONFIG = [
   { name: "Hair Relaxing",            imgKey: "salon_service_relax_url",     descKey: "salon_service_relax_desc",     priceKey: "salon_service_relax_price",     defaultPrice: "GH₵ 80+" },

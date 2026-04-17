@@ -185,6 +185,23 @@ function AnalyticsPage() {
       .slice(0, 10);
   }, [sales]);
 
+  // ── Top products by quantity ─────────────────────────────────────────────
+  const topByQty = useMemo(() => {
+    const map: Record<string, { qty: number; revenue: number }> = {};
+    sales.forEach((s) => {
+      s.sale_items.forEach((i) => {
+        const name = i.product?.name ?? "Unknown";
+        if (!map[name]) map[name] = { qty: 0, revenue: 0 };
+        map[name].qty += i.quantity;
+        map[name].revenue += i.quantity * i.unit_price;
+      });
+    });
+    return Object.entries(map)
+      .map(([name, v]) => ({ name, ...v }))
+      .sort((a, b) => b.qty - a.qty)
+      .slice(0, 10);
+  }, [sales]);
+
   // ── Category breakdown ───────────────────────────────────────────────────
   const categoryData = useMemo(() => {
     const map: Record<string, number> = {};
@@ -437,6 +454,44 @@ function AnalyticsPage() {
                   <Bar dataKey="qty" name="Units Sold" fill="#D4AF37" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
+            )}
+          </div>
+
+          {/* ── Top Sales by Quantity ── */}
+          <div className="card p-6">
+            <h2 className="font-semibold text-[#023E8A] mb-1">Top Sales by Quantity Sold</h2>
+            <p className="text-xs text-gray-400 mb-5">Top 10 best-selling products · {periodLabel}</p>
+            {topByQty.length === 0 ? (
+              <p className="text-gray-400 text-sm text-center py-8">No sales data yet.</p>
+            ) : (
+              <div className="space-y-3">
+                {topByQty.map((p, i) => {
+                  const maxQty = topByQty[0].qty;
+                  const pct = maxQty ? Math.round((p.qty / maxQty) * 100) : 0;
+                  const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : null;
+                  const barClass = i === 0 ? "bg-[#D4AF37]" : i === 1 ? "bg-gray-400" : i === 2 ? "bg-amber-700" : "bg-[#0077B6]";
+                  return (
+                    <div key={p.name}>
+                      <div className="flex items-center justify-between text-sm mb-1.5">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="text-base w-6 shrink-0">{medal ?? <span className="text-xs text-gray-400 font-bold">{i + 1}</span>}</span>
+                          <span className="font-medium text-[#2C1A0E] truncate">{p.name}</span>
+                        </div>
+                        <div className="flex items-center gap-3 shrink-0 ml-3">
+                          <span className="text-xs text-gray-400">{formatCurrency(p.revenue)}</span>
+                          <span className="font-bold text-[#023E8A] tabular-nums">{p.qty} sold</span>
+                        </div>
+                      </div>
+                      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${barClass}`}
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </div>
 

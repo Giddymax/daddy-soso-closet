@@ -4,6 +4,7 @@ import SupabaseImage from "@/components/shared/SupabaseImage";
 import { ArrowLeft, ShoppingBag, MapPin, Phone, Scissors, Clock, Sparkles } from "lucide-react";
 import { createServerClient } from "@/lib/supabase-server";
 import ProductGallery from "@/components/landing/ProductGallery";
+import CartDrawer from "@/components/landing/CartDrawer";
 import Footer from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
@@ -24,7 +25,7 @@ async function getBranchData() {
         "abaam_hero_url", "logo_url", "abaam_salon_description",
         "phone_number", "email", "instagram_url", "facebook_url", "footer_tagline", "abaam_description",
         "abaam_salon_banner_url", "abaam_salon_tagline", "abaam_salon_hours",
-        "abaam_salon_whatsapp", "abaam_salon_featured_1", "abaam_salon_featured_2", "abaam_salon_featured_3",
+        "abaam_salon_whatsapp", "abaam_whatsapp", "abaam_salon_featured_1", "abaam_salon_featured_2", "abaam_salon_featured_3",
       ]),
     supabase.from("categories").select("*").order("name"),
   ]);
@@ -103,7 +104,11 @@ export default async function AbaamPage() {
         )}
 
         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        <ProductGallery products={products as any} categories={categories} />
+        <ProductGallery
+          products={products as any}
+          categories={categories}
+          branchConfig={{ branchId: branch?.id ?? "", storageKey: "abaam", branchName: "Abaam Branch" }}
+        />
 
         {/* ─── Salon Section ─── */}
         <section className="bg-white">
@@ -234,6 +239,13 @@ export default async function AbaamPage() {
           </div>
         </section>
       </main>
+
+      <CartDrawer
+        whatsappPhone={settings.abaam_whatsapp || settings.phone_number}
+        branchId={branch?.id}
+        branchName="Abaam Branch"
+        storageKey="abaam"
+      />
 
       <Footer
         instagramUrl={settings.instagram_url}

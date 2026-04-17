@@ -4,6 +4,7 @@ import SupabaseImage from "@/components/shared/SupabaseImage";
 import { ArrowLeft, ShoppingBag, MapPin, Phone } from "lucide-react";
 import { createServerClient } from "@/lib/supabase-server";
 import ProductGallery from "@/components/landing/ProductGallery";
+import CartDrawer from "@/components/landing/CartDrawer";
 import Footer from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
@@ -20,7 +21,7 @@ async function getBranchData() {
     supabase
       .from("site_settings")
       .select("key, value")
-      .in("key", ["tweapease_hero_url", "logo_url", "phone_number", "email", "instagram_url", "facebook_url", "footer_tagline", "tweapease_description"]),
+      .in("key", ["tweapease_hero_url", "logo_url", "phone_number", "email", "instagram_url", "facebook_url", "footer_tagline", "tweapease_description", "tweapease_whatsapp"]),
     supabase.from("categories").select("*").order("name"),
   ]);
 
@@ -103,8 +104,19 @@ export default async function TweapeasePage() {
         )}
 
         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-        <ProductGallery products={products as any} categories={categories} />
+        <ProductGallery
+          products={products as any}
+          categories={categories}
+          branchConfig={{ branchId: branch?.id ?? "", storageKey: "tweapease", branchName: "Tweapease Branch" }}
+        />
       </main>
+
+      <CartDrawer
+        whatsappPhone={settings.tweapease_whatsapp || settings.phone_number}
+        branchId={branch?.id}
+        branchName="Tweapease Branch"
+        storageKey="tweapease"
+      />
 
       <Footer
         instagramUrl={settings.instagram_url}

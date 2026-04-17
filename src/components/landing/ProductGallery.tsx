@@ -1,23 +1,56 @@
 "use client";
-import { useState, memo } from "react";
-import { ShoppingBag, AlertCircle } from "lucide-react";
+import { useState, memo, useCallback } from "react";
+import { ShoppingBag, AlertCircle, ShoppingCart, Check } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import type { Product, Category } from "@/types";
 import SupabaseImage from "@/components/shared/SupabaseImage";
+import { getCartStore } from "@/store/cartStore";
+
+export interface BranchConfig {
+  branchId: string;
+  storageKey: string;
+  branchName?: string;
+}
+
+type ProductWithMeta = Product & { category?: Category; inventory_quantity?: number };
 
 interface ProductGalleryProps {
-  products: (Product & { category?: Category })[];
+  products: ProductWithMeta[];
   categories: Category[];
+  branchConfig?: BranchConfig;
 }
 
 const ProductCard = memo(function ProductCard({
   product,
+  storageKey,
 }: {
-  product: Product & { category?: Category };
+  product: ProductWithMeta;
+  storageKey: string;
 }) {
+  const addItem = getCartStore(storageKey)((s) => s.addItem);
+  const cartQty = getCartStore(storageKey)(
+    (s) => s.items.find((i) => i.product_id === product.id)?.quantity ?? 0
+  );
+  const [added, setAdded] = useState(false);
+
+  const maxQty = product.inventory_quantity;
+  const atMax = maxQty !== undefined && cartQty >= maxQty;
+
+  const handleAddToCart = useCallback(() => {
+    if (atMax) return;
+    addItem({
+      product_id: product.id,
+      name: product.name,
+      price: product.price,
+      image_url: product.image_url,
+      max_quantity: maxQty,
+    });
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1500);
+  }, [addItem, product, maxQty, atMax]);
+
   return (
-    <div className="card group overflow-hidden border border-stone-100 hover:border-[#C4954A]/40 transition-all duration-300 hover:-translate-y-1">
-      {/* Image container — fixed height, overflow hidden */}
+    <div className="card group overflow-hidden border border-stone-100 hover:border-[#C4954A]/40 transition-all duration-300 hover:-translate-y-1 flex flex-col">
       <div className="relative h-56 w-full bg-gradient-to-br from-stone-50 to-stone-100 overflow-hidden">
         {product.image_url ? (
           <SupabaseImage
@@ -33,9 +66,14 @@ const ProductCard = memo(function ProductCard({
             <ShoppingBag size={40} className="text-[#8B5E3C]/25" />
           </div>
         )}
+        {maxQty !== undefined && maxQty <= 3 && maxQty > 0 && (
+          <span className="absolute top-2 left-2 bg-orange-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+            Only {maxQty} left
+          </span>
+        )}
       </div>
 
-      <div className="p-4">
+      <div className="p-4 flex flex-col flex-1">
         <span className="text-xs text-[#A67C5B] font-medium uppercase tracking-wide">
           {product.category?.name ?? "Uncategorized"}
         </span>
@@ -45,19 +83,40 @@ const ProductCard = memo(function ProductCard({
         {product.description && (
           <p className="text-stone-400 text-xs mb-2 line-clamp-2 leading-relaxed">{product.description}</p>
         )}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mt-auto pt-2">
           <span className="text-lg font-bold text-[#8B5E3C]">
             {formatCurrency(product.price)}
           </span>
-          <span className="text-[10px] text-stone-400 italic">No discount</span>
         </div>
+
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          disabled={atMax}
+          className={`mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
+            atMax
+              ? "bg-stone-100 text-stone-400 cursor-not-allowed"
+              : added
+              ? "bg-green-500 text-white"
+              : "bg-[#2C1A0E] hover:bg-[#8B5E3C] text-white"
+          }`}
+        >
+          {atMax ? (
+            "Max in cart"
+          ) : added ? (
+            <><Check size={15} /> Added</>
+          ) : (
+            <><ShoppingCart size={15} /> Add to Cart</>
+          )}
+        </button>
       </div>
     </div>
   );
 });
 
-export default function ProductGallery({ products, categories }: ProductGalleryProps) {
+export default function ProductGallery({ products, categories, branchConfig }: ProductGalleryProps) {
   const [activeCategory, setActiveCategory] = useState("all");
+  const storageKey = branchConfig?.storageKey ?? "main";
 
   const filtered =
     activeCategory === "all"
@@ -75,9 +134,9 @@ export default function ProductGallery({ products, categories }: ProductGalleryP
           <div className="w-16 h-1 bg-[#C4954A] mx-auto mt-3 rounded-full" />
         </div>
 
-        {/* Category filters */}
         <div className="flex flex-wrap gap-2 justify-center mb-10">
           <button
+            type="button"
             onClick={() => setActiveCategory("all")}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
               activeCategory === "all"
@@ -89,6 +148,7 @@ export default function ProductGallery({ products, categories }: ProductGalleryP
           </button>
           {categories.map((cat) => (
             <button
+              type="button"
               key={cat.id}
               onClick={() => setActiveCategory(cat.slug)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
@@ -102,7 +162,6 @@ export default function ProductGallery({ products, categories }: ProductGalleryP
           ))}
         </div>
 
-        {/* Grid */}
         {filtered.length === 0 ? (
           <div className="text-center py-20 text-stone-400">
             <AlertCircle size={40} className="mx-auto mb-3 opacity-40" />
@@ -112,7 +171,7 @@ export default function ProductGallery({ products, categories }: ProductGalleryP
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filtered.map((p) => (
-              <ProductCard key={p.id} product={p} />
+              <ProductCard key={p.id} product={p} storageKey={storageKey} />
             ))}
           </div>
         )}

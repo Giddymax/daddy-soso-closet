@@ -7,6 +7,7 @@ import BranchCard from "@/components/landing/BranchCard";
 import MidBanner from "@/components/landing/MidBanner";
 import ProductGallery from "@/components/landing/ProductGallery";
 import ContactSection from "@/components/landing/ContactSection";
+import CartDrawer from "@/components/landing/CartDrawer";
 import { ProductSkeleton } from "@/components/shared/LoadingSkeleton";
 
 async function getPageData() {
@@ -96,7 +97,7 @@ export default async function HomePage() {
             </section>
           }
         >
-          <ProductGallery products={products} categories={categories} />
+          <ProductGallery products={products} categories={categories} branchConfig={undefined} />
         </Suspense>
 
         {/* Contact */}
@@ -106,6 +107,8 @@ export default async function HomePage() {
           mapEmbedUrl={settings.map_embed_url}
         />
       </main>
+
+      <CartDrawer whatsappPhone={settings.whatsapp_number || settings.phone_number} />
 
       <Footer
         instagramUrl={settings.instagram_url}
