@@ -49,10 +49,10 @@ export default async function SalonPage() {
             <ArrowLeft size={18} />
             <span className="text-sm font-medium">Back to Abaam Branch</span>
           </Link>
-          <span className="font-playfair font-bold text-[#F59E0B] hidden sm:block">
+          <span className="font-playfair font-bold text-[#003153] hidden sm:block">
             Daddy SoSo Closet — Salon
           </span>
-          <a href={`tel:${phone}`} className="flex items-center gap-1.5 bg-[#F59E0B] text-[#065F46] px-3 py-1.5 rounded-lg font-bold text-xs hover:bg-amber-300 transition-colors">
+          <a href={`tel:${phone}`} className="flex items-center gap-1.5 bg-[#003153] text-white px-3 py-1.5 rounded-lg font-bold text-xs hover:bg-[#004080] transition-colors">
             <Phone size={14} /> Call Us
           </a>
         </div>
@@ -75,17 +75,17 @@ export default async function SalonPage() {
           </div>
           <div className="absolute inset-0 bg-gradient-to-r from-[#065F46]/80 via-[#10B981]/60 to-transparent" />
           <div className="relative z-10 text-center px-4 max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-[#F59E0B]/20 border border-[#F59E0B]/40 text-[#F59E0B] text-xs font-semibold px-4 py-1.5 rounded-full mb-6 backdrop-blur-sm">
+            <div className="inline-flex items-center gap-2 bg-[#003153]/20 border border-[#003153]/40 text-[#003153] text-xs font-semibold px-4 py-1.5 rounded-full mb-6 backdrop-blur-sm">
               <Scissors size={12} /> Abaam Branch Salon
             </div>
             <h1 className="font-playfair text-5xl sm:text-6xl md:text-7xl font-bold text-white leading-tight mb-4">
-              Look Your <span className="block text-[#F59E0B]">Very Best</span>
+              Look Your <span className="block text-[#003153]">Very Best</span>
             </h1>
             <p className="text-white/80 text-lg sm:text-xl mb-10">
               Premium hair care &amp; styling services crafted with skill and passion.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="#book" className="bg-[#F59E0B] text-[#065F46] px-8 py-4 rounded-xl font-bold text-lg hover:bg-amber-300 transition-all duration-300 shadow-xl hover:-translate-y-0.5">
+              <a href="#book" className="bg-[#003153] text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-[#004080] transition-all duration-300 shadow-xl hover:-translate-y-0.5">
                 Book Appointment
               </a>
               <a href="#services" className="bg-white/10 backdrop-blur-sm text-white border border-white/30 px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition-all duration-300">
@@ -136,7 +136,7 @@ export default async function SalonPage() {
               <div>
                 <p className="text-[#10B981] font-semibold text-sm uppercase tracking-widest mb-2">About Us</p>
                 <h2 className="font-playfair text-4xl font-bold text-[#065F46] mb-4">Your Beauty, Our Passion</h2>
-                <div className="w-16 h-1 bg-[#F59E0B] rounded-full mb-6" />
+                <div className="w-16 h-1 bg-[#003153] rounded-full mb-6" />
                 <p className="text-gray-600 leading-relaxed mb-4">
                   {s.abaam_salon_description ||
                     "Nestled within Daddy SoSo Closet's Abaam Branch, our salon brings professional beauty services to the heart of the Eastern Region. From protective styles to glamorous blowouts, every client leaves feeling confident and beautiful."}
@@ -144,7 +144,7 @@ export default async function SalonPage() {
                 <div className="flex flex-wrap gap-4">
                   {[["5+", "Years Experience"], ["500+", "Happy Clients"], ["6+", "Services"]].map(([stat, label]) => (
                     <div key={label} className="text-center">
-                      <div className="font-playfair text-3xl font-bold text-[#F59E0B]">{stat}</div>
+                      <div className="font-playfair text-3xl font-bold text-[#003153]">{stat}</div>
                       <div className="text-sm text-gray-500">{label}</div>
                     </div>
                   ))}
@@ -160,7 +160,7 @@ export default async function SalonPage() {
             <div className="text-center mb-12">
               <p className="text-[#10B981] font-semibold text-sm uppercase tracking-widest mb-2">What We Offer</p>
               <h2 className="font-playfair text-4xl font-bold text-[#065F46]">Our Services</h2>
-              <div className="w-16 h-1 bg-[#F59E0B] mx-auto mt-3 rounded-full" />
+              <div className="w-16 h-1 bg-[#003153] mx-auto mt-3 rounded-full" />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {servicesMeta.map((service) => (
@@ -189,7 +189,7 @@ export default async function SalonPage() {
                       {s[service.descKey] || service.defaultDesc}
                     </p>
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-[#F59E0B] text-lg">
+                      <span className="font-bold text-[#003153] text-lg">
                         {s[service.priceKey] || service.defaultPrice}
                       </span>
                       <span className="text-xs text-gray-400 flex items-center gap-1"><Clock size={12} /> {service.duration}</span>
@@ -210,7 +210,7 @@ export default async function SalonPage() {
             <div className="text-center mb-12">
               <p className="text-[#10B981] font-semibold text-sm uppercase tracking-widest mb-2">Our Work</p>
               <h2 className="font-playfair text-4xl font-bold text-[#065F46]">Gallery</h2>
-              <div className="w-16 h-1 bg-[#F59E0B] mx-auto mt-3 rounded-full" />
+              <div className="w-16 h-1 bg-[#003153] mx-auto mt-3 rounded-full" />
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {galleryKeys.map((key, idx) => (
@@ -242,9 +242,9 @@ export default async function SalonPage() {
         <section id="book" className="py-20 bg-[#065F46]">
           <div className="max-w-3xl mx-auto px-4 sm:px-6">
             <div className="text-center mb-12">
-              <p className="text-[#F59E0B] font-semibold text-sm uppercase tracking-widest mb-2">Reserve Your Spot</p>
+              <p className="text-[#003153] font-semibold text-sm uppercase tracking-widest mb-2">Reserve Your Spot</p>
               <h2 className="font-playfair text-4xl font-bold text-white">Book an Appointment</h2>
-              <div className="w-16 h-1 bg-[#F59E0B] mx-auto mt-3 rounded-full" />
+              <div className="w-16 h-1 bg-[#003153] mx-auto mt-3 rounded-full" />
             </div>
             <BookingForm
               services={servicesMeta.map((sv) => ({
@@ -263,7 +263,7 @@ export default async function SalonPage() {
             <div className="text-center mb-12">
               <p className="text-[#10B981] font-semibold text-sm uppercase tracking-widest mb-2">Find Us</p>
               <h2 className="font-playfair text-4xl font-bold text-[#065F46]">Visit the Salon</h2>
-              <div className="w-16 h-1 bg-[#F59E0B] mx-auto mt-3 rounded-full" />
+              <div className="w-16 h-1 bg-[#003153] mx-auto mt-3 rounded-full" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-emerald-100 text-center">
