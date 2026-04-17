@@ -1,13 +1,14 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard, BarChart2, Package,
   Users, FileEdit, Settings, LogOut, Menu, X,
   ShoppingCart, Boxes, Home,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useAuthStore } from "@/store/authStore";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -23,8 +24,20 @@ const navItems = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { signOut } = useAuth();
+  const { role, user } = useAuthStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    if (user === null) {
+      router.replace("/auth/login");
+    } else if (role && role !== "admin") {
+      router.replace("/dashboard");
+    }
+  }, [user, role, router]);
+
+  if (!user || role !== "admin") return null;
 
   return (
     <div className="min-h-screen bg-[#FAF8F5] flex">
