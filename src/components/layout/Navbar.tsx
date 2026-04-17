@@ -30,12 +30,12 @@ export default function Navbar({ logoUrl }: NavbarProps) {
               <SupabaseImage
                 src={logoUrl}
                 alt="Daddy SoSo Closet Logo"
-                width={40}
-                height={40}
-                className="rounded-full object-cover"
+                width={64}
+                height={64}
+                className="h-16 w-16 object-cover"
               />
             ) : (
-              <span className="w-10 h-10 rounded-full bg-[#2C1A0E] flex items-center justify-center font-playfair font-bold text-[#C4954A] text-lg">
+              <span className="w-16 h-16 bg-[#2C1A0E] flex items-center justify-center font-playfair font-bold text-[#C4954A] text-xl">
                 D
               </span>
             )}
