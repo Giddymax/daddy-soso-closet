@@ -101,6 +101,7 @@ export default function DashboardPage() {
             <Package size={20} className="text-[#D4AF37]" />
           </div>
           <p className="text-3xl font-bold text-[#023E8A]">{stats.itemsSold}</p>
+          <p className="text-xs text-gray-400 mt-1">{formatCurrency(stats.todaySales - stats.salonServicesRevenue)} earned</p>
         </div>
         {isSalonBranch && (
           <div className="card p-6 border-l-4 border-[#D4AF37]">
