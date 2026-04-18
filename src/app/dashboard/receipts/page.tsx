@@ -172,7 +172,7 @@ export default function StaffSalesPage() {
                         <span className="flex items-center justify-center gap-1">
                           {totalItems(sale)}
                           {(sale.salon_sale_items?.length ?? 0) > 0 && (
-                            <Scissors size={11} className="text-[#D4AF37]" title="Includes salon services" />
+                            <span title="Includes salon services"><Scissors size={11} className="text-[#D4AF37]" /></span>
                           )}
                         </span>
                       </td>
