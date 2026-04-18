@@ -1,21 +1,25 @@
 "use client";
 import { useEffect, useState } from "react";
-import { TrendingUp, Package, AlertTriangle, ReceiptText } from "lucide-react";
+import { TrendingUp, Package, AlertTriangle, ReceiptText, Scissors } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase";
 import { useAuthStore } from "@/store/authStore";
 import { formatCurrency, formatGhanaDateTime } from "@/lib/utils";
 import { CardSkeleton } from "@/components/shared/LoadingSkeleton";
 
 export default function DashboardPage() {
-  const { staff } = useAuthStore();
+  const { staff, branch } = useAuthStore();
   const supabase = createBrowserClient();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     todaySales: 0,
     itemsSold: 0,
+    salonServicesCount: 0,
+    salonServicesRevenue: 0,
     lowStock: [] as { name: string; quantity: number }[],
     recentSales: [] as { receipt_number: string; total_amount: number; created_at: string }[],
   });
+
+  const isSalonBranch = branch?.type === "boutique_salon";
 
   useEffect(() => {
     if (!staff) return;
@@ -38,16 +42,30 @@ export default function DashboardPage() {
       ]);
 
       const sales = salesRes.data ?? [];
+      const saleIds = sales.map((s) => s.id);
       const todaySales = sales.reduce((s, r) => s + Number(r.total_amount), 0);
       const itemsSold = sales.reduce(
         (s, r) => s + r.sale_items.reduce((a: number, i: { quantity: number }) => a + i.quantity, 0), 0
       );
 
+      let salonServicesCount = 0;
+      let salonServicesRevenue = 0;
+      if (saleIds.length) {
+        const { data: salonItems } = await supabase
+          .from("salon_sale_items")
+          .select("quantity, unit_price")
+          .in("sale_id", saleIds);
+        (salonItems ?? []).forEach((si) => {
+          salonServicesCount += si.quantity;
+          salonServicesRevenue += Number(si.unit_price) * si.quantity;
+        });
+      }
+
       const lowStock = (inventoryRes.data ?? [])
         .filter((i) => i.quantity <= i.restock_threshold)
         .map((i) => ({ name: (i.product as unknown as { name: string } | null)?.name ?? "Unknown", quantity: i.quantity }));
 
-      setStats({ todaySales, itemsSold, lowStock, recentSales: sales.slice(0, 10) });
+      setStats({ todaySales, itemsSold, salonServicesCount, salonServicesRevenue, lowStock, recentSales: sales.slice(0, 10) });
       setLoading(false);
     }
     load();
@@ -69,7 +87,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <div className={`grid grid-cols-1 gap-6 ${isSalonBranch ? "sm:grid-cols-2 lg:grid-cols-4" : "sm:grid-cols-3"}`}>
         <div className="card p-6 border-l-4 border-[#0077B6]">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-gray-500">Today&apos;s Sales</span>
@@ -84,6 +102,16 @@ export default function DashboardPage() {
           </div>
           <p className="text-3xl font-bold text-[#023E8A]">{stats.itemsSold}</p>
         </div>
+        {isSalonBranch && (
+          <div className="card p-6 border-l-4 border-[#D4AF37]">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-gray-500">Services Today</span>
+              <Scissors size={20} className="text-[#D4AF37]" />
+            </div>
+            <p className="text-3xl font-bold text-[#023E8A]">{stats.salonServicesCount}</p>
+            <p className="text-xs text-gray-400 mt-1">{formatCurrency(stats.salonServicesRevenue)} earned</p>
+          </div>
+        )}
         <div className="card p-6 border-l-4 border-red-400">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-stone-500">Low Stock Alerts</span>

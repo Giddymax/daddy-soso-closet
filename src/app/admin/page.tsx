@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { TrendingUp, Users, Package, BarChart2, FileEdit, Settings } from "lucide-react";
+import { TrendingUp, Users, Package, BarChart2, FileEdit, Settings, Scissors } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase";
 import { formatCurrency } from "@/lib/utils";
 import { CardSkeleton } from "@/components/shared/LoadingSkeleton";
@@ -10,9 +10,12 @@ interface BranchStats {
   id: string;
   name: string;
   display_name: string;
+  type: string;
   todayRevenue: number;
   itemsSold: number;
   lowStockCount: number;
+  salonServicesCount: number;
+  salonServicesRevenue: number;
 }
 
 export default function AdminPage() {
@@ -27,8 +30,8 @@ export default function AdminPage() {
       const weekStart = new Date(); weekStart.setDate(weekStart.getDate() - 7); weekStart.setHours(0, 0, 0, 0);
 
       const [branchesRes, todaySalesRes, weekSalesRes] = await Promise.all([
-        supabase.from("branches").select("id, name, display_name"),
-        supabase.from("sales").select("branch_id, total_amount, sale_items(quantity)").gte("created_at", todayStart.toISOString()),
+        supabase.from("branches").select("id, name, display_name, type"),
+        supabase.from("sales").select("id, branch_id, total_amount, sale_items(quantity)").gte("created_at", todayStart.toISOString()),
         supabase.from("sales").select("total_amount").gte("created_at", weekStart.toISOString()),
       ]);
 
@@ -40,14 +43,24 @@ export default function AdminPage() {
       const weekTotal = weekSales.reduce((s, r) => s + Number(r.total_amount), 0);
       setCombined({ today: todayTotal, week: weekTotal });
 
+      const todaySaleIds = todaySales.map((s) => s.id);
+      const { data: salonItemsData } = todaySaleIds.length
+        ? await supabase.from("salon_sale_items").select("sale_id, quantity, unit_price").in("sale_id", todaySaleIds)
+        : { data: [] };
+      const salonItems = salonItemsData ?? [];
+
       const branchStats: BranchStats[] = await Promise.all(
         allBranches.map(async (b) => {
           const bSales = todaySales.filter((s) => s.branch_id === b.id);
+          const bSaleIds = bSales.map((s) => s.id);
           const todayRevenue = bSales.reduce((s, r) => s + Number(r.total_amount), 0);
           const itemsSold = bSales.reduce((s, r) => s + r.sale_items.reduce((a: number, i: { quantity: number }) => a + i.quantity, 0), 0);
+          const bSalonItems = salonItems.filter((si) => bSaleIds.includes(si.sale_id));
+          const salonServicesCount = bSalonItems.reduce((s, i) => s + i.quantity, 0);
+          const salonServicesRevenue = bSalonItems.reduce((s, i) => s + Number(i.unit_price) * i.quantity, 0);
           const { data: inv } = await supabase.from("inventory").select("quantity, restock_threshold").eq("branch_id", b.id);
           const lowStockCount = (inv ?? []).filter((i) => i.quantity <= i.restock_threshold).length;
-          return { ...b, todayRevenue, itemsSold, lowStockCount };
+          return { ...b, type: b.type ?? "", todayRevenue, itemsSold, lowStockCount, salonServicesCount, salonServicesRevenue };
         })
       );
 
@@ -111,7 +124,7 @@ export default function AdminPage() {
                     <BarChart2 size={13} /> View Analytics
                   </Link>
                 </div>
-                <div className="grid grid-cols-3 gap-2 text-center">
+                <div className={`grid gap-2 text-center ${b.type === "boutique_salon" ? "grid-cols-2" : "grid-cols-3"}`}>
                   <div>
                     <p className="text-sm sm:text-xl font-bold text-[#0077B6] leading-tight break-all">{formatCurrency(b.todayRevenue)}</p>
                     <p className="text-xs text-gray-400 mt-0.5">Today</p>
@@ -120,11 +133,31 @@ export default function AdminPage() {
                     <p className="text-xl sm:text-2xl font-bold text-green-600">{b.itemsSold}</p>
                     <p className="text-xs text-gray-400 mt-0.5">Items Sold</p>
                   </div>
-                  <div>
-                    <p className="text-xl sm:text-2xl font-bold text-red-500">{b.lowStockCount}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">Low Stock</p>
-                  </div>
+                  {b.type !== "boutique_salon" && (
+                    <div>
+                      <p className="text-xl sm:text-2xl font-bold text-red-500">{b.lowStockCount}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">Low Stock</p>
+                    </div>
+                  )}
                 </div>
+                {b.type === "boutique_salon" && (
+                  <div className="mt-3 pt-3 border-t border-gray-100">
+                    <div className="grid grid-cols-3 gap-2 text-center">
+                      <div>
+                        <p className="text-lg font-bold text-[#D4AF37]">{b.salonServicesCount}</p>
+                        <p className="text-xs text-gray-400 mt-0.5 flex items-center justify-center gap-0.5"><Scissors size={10} /> Services</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-[#023E8A] leading-tight break-all">{formatCurrency(b.salonServicesRevenue)}</p>
+                        <p className="text-xs text-gray-400 mt-0.5">Salon Rev.</p>
+                      </div>
+                      <div>
+                        <p className="text-xl font-bold text-red-500">{b.lowStockCount}</p>
+                        <p className="text-xs text-gray-400 mt-0.5">Low Stock</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
