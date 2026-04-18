@@ -66,6 +66,14 @@ export default function AdminSalesPage() {
 
   useEffect(() => { load(); }, [load]);
 
+  useEffect(() => {
+    const channel = supabase
+      .channel("admin-sales-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "sales" }, () => { load(); })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [supabase, load]);
+
   function toggleExpand(sale: SaleRow) {
     if (expanded === sale.id) { setExpanded(null); return; }
     setExpanded(sale.id);

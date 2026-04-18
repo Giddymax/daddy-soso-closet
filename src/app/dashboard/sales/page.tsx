@@ -337,6 +337,10 @@ export default function SalesPage() {
         <CustomerInfoModal
           onConfirm={completeSale}
           onClose={() => setShowCustomerModal(false)}
+          cart={cart}
+          total={total}
+          branchName={branch?.display_name ?? ""}
+          paymentMethod={paymentMethod}
         />
       )}
 

@@ -57,6 +57,14 @@ export default function StaffSalesPage() {
 
   useEffect(() => { load(); }, [load]);
 
+  useEffect(() => {
+    const channel = supabase
+      .channel("staff-sales-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "sales" }, () => { load(); })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [supabase, load]);
+
   function saleToCartItems(sale: SaleRow): CartItem[] {
     return sale.sale_items.map((si) => ({
       product_id: "",
