@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import { Package, Plus, AlertTriangle } from "lucide-react";
+import { Package, Plus, AlertTriangle, Lock } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase";
 import { useAuthStore } from "@/store/authStore";
 import { formatGhanaDateTime } from "@/lib/utils";
@@ -14,7 +14,8 @@ interface InventoryItem {
 }
 
 export default function InventoryPage() {
-  const { staff, branch } = useAuthStore();
+  const { staff, branch, role } = useAuthStore();
+  const isAdmin = role === "admin";
   const supabase = createBrowserClient();
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -76,6 +77,13 @@ export default function InventoryPage() {
         <p className="text-gray-500 text-sm">{branch?.display_name}</p>
       </div>
 
+      {!isAdmin && (
+        <div className="flex items-center gap-2 text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+          <Lock size={15} className="shrink-0" />
+          Only admins can restock inventory. Contact your admin if a restock is needed.
+        </div>
+      )}
+
       <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -86,7 +94,7 @@ export default function InventoryPage() {
                 <th className="text-center px-4 py-3 text-gray-500 font-medium">Stock</th>
                 <th className="text-center px-4 py-3 text-gray-500 font-medium">Status</th>
                 <th className="text-right px-4 py-3 text-gray-500 font-medium">Last Restocked</th>
-                <th className="px-4 py-3" />
+                {isAdmin && <th className="px-4 py-3 sr-only">Restock</th>}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -103,14 +111,17 @@ export default function InventoryPage() {
                       <td className="px-4 py-3 text-right text-gray-400 text-xs">
                         {item.last_restocked_at ? formatGhanaDateTime(item.last_restocked_at) : "Never"}
                       </td>
-                      <td className="px-4 py-3 text-right">
-                        <button
-                          onClick={() => { setRestockItem(item); setRestockQty(0); }}
-                          className="flex items-center gap-1 bg-[#0077B6]/10 text-[#0077B6] px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-[#0077B6] hover:text-white transition-colors ml-auto"
-                        >
-                          <Plus size={12} /> Restock
-                        </button>
-                      </td>
+                      {isAdmin && (
+                        <td className="px-4 py-3 text-right">
+                          <button
+                            type="button"
+                            onClick={() => { setRestockItem(item); setRestockQty(0); }}
+                            className="flex items-center gap-1 bg-[#0077B6]/10 text-[#0077B6] px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-[#0077B6] hover:text-white transition-colors ml-auto"
+                          >
+                            <Plus size={12} /> Restock
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   ))
               }
