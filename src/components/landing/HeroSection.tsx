@@ -18,7 +18,7 @@ export default function HeroSection({ heroImageUrl, tagline }: HeroSectionProps)
           src={heroImageUrl}
           alt="Daddy SoSo Closet boutique interior"
           fill
-          className="object-cover object-center"
+          className="object-cover object-center contrast-110 saturate-110 brightness-105"
           sizes="100vw"
           priority
         />
@@ -28,7 +28,8 @@ export default function HeroSection({ heroImageUrl, tagline }: HeroSectionProps)
             src="/boutique-hero.jpg"
             alt="Daddy SoSo Closet boutique"
             fill
-            className="object-cover object-center"
+            quality={100}
+            className="object-cover object-center contrast-110 saturate-110 brightness-105"
             sizes="100vw"
             priority
           />
@@ -36,12 +37,12 @@ export default function HeroSection({ heroImageUrl, tagline }: HeroSectionProps)
       )}
 
       {/* Warm earthy overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#2C1A0E]/80 via-[#5C3520]/55 to-[#2C1A0E]/35" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#2C1A0E]/60 via-[#5C3520]/35 to-[#2C1A0E]/20" />
 
       {/* Content */}
       <div className="relative z-10 text-center px-4 sm:px-6 max-w-4xl mx-auto">
         <div
-          className="inline-flex items-center gap-2 bg-[#C4954A]/20 border border-[#C4954A]/40 text-[#003153] text-xs font-semibold px-4 py-1.5 rounded-full mb-6 backdrop-blur-sm animate-fadeIn"
+          className="inline-flex items-center gap-2 bg-[#C4954A]/20 border border-[#C4954A]/40 text-[#00081a] text-xs font-semibold px-4 py-1.5 rounded-full mb-6 backdrop-blur-sm animate-fadeIn"
         >
           <MapPin size={12} />
           Kwaebibirim Municipal, Eastern Region, Ghana

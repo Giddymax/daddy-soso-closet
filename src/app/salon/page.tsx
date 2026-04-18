@@ -67,13 +67,13 @@ export default async function SalonPage() {
                 src={s.salon_hero_url}
                 alt="Daddy SoSo Closet Salon"
                 fill
-                className="object-cover object-center opacity-60"
+                className="object-cover object-center opacity-85 contrast-110 saturate-110 brightness-105"
                 sizes="100vw"
                 priority
               />
             )}
           </div>
-          <div className="absolute inset-0 bg-gradient-to-r from-[#065F46]/80 via-[#10B981]/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#065F46]/55 via-[#10B981]/30 to-transparent" />
           <div className="relative z-10 text-center px-4 max-w-3xl mx-auto">
             <div className="inline-flex items-center gap-2 bg-[#003153]/20 border border-[#003153]/40 text-[#003153] text-xs font-semibold px-4 py-1.5 rounded-full mb-6 backdrop-blur-sm">
               <Scissors size={12} /> Abaam Branch Salon

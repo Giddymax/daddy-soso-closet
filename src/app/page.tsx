@@ -81,7 +81,9 @@ export default async function HomePage() {
         </section>
 
         {/* Mid-section banner */}
-        <MidBanner imageUrl={settings.mid_hero_url || undefined} />
+        {settings.feature_mid_banner !== "false" && (
+          <MidBanner imageUrl={settings.mid_hero_url || undefined} />
+        )}
 
         {/* Products */}
         <Suspense
@@ -108,14 +110,18 @@ export default async function HomePage() {
         />
       </main>
 
-      <CartDrawer whatsappPhone={settings.whatsapp_number || settings.phone_number} />
+      {settings.feature_cart !== "false" && (
+        <CartDrawer whatsappPhone={settings.whatsapp_number || settings.phone_number} />
+      )}
 
       <Footer
         instagramUrl={settings.instagram_url}
         facebookUrl={settings.facebook_url}
+        tiktokUrl={settings.tiktok_url}
         phone={settings.phone_number}
         email={settings.email}
         tagline={settings.footer_tagline}
+        showSalonLink={settings.feature_salon_link !== "false"}
       />
     </>
   );

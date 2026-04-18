@@ -44,7 +44,12 @@ export async function POST(req: NextRequest) {
       branchName, receiptNumber, items, total, staffName, paymentMethod, dailyTotals,
     });
 
-    const adminPhone = process.env.ARKESEL_RECIPIENT_PHONE ?? "0552315639";
+    const { data: phoneSetting } = await supabase
+      .from("site_settings")
+      .select("value")
+      .eq("key", "sms_recipient_phone")
+      .single();
+    const adminPhone = phoneSetting?.value || process.env.ARKESEL_RECIPIENT_PHONE || "0552315639";
     const result = await sendSMS({ to: adminPhone, message });
 
     if (!result.success) {

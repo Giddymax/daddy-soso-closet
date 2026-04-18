@@ -23,6 +23,7 @@ const SETTINGS_KEYS = [
   // ── Social ────────────────────────────────────────────────
   { key: "instagram_url",    label: "Instagram Link",            type: "text",     placeholder: "https://instagram.com/yourpage", group: "Social" },
   { key: "facebook_url",     label: "Facebook Link",             type: "text",     placeholder: "https://facebook.com/yourpage", group: "Social" },
+  { key: "tiktok_url",       label: "TikTok Link",               type: "text",     placeholder: "https://tiktok.com/@yourpage", group: "Social" },
 
   // ── Homepage Images ───────────────────────────────────────
   { key: "hero_image_url",   label: "Main Hero Image",           type: "image",    bucket: "site-assets", group: "Homepage" },
@@ -44,6 +45,9 @@ const SETTINGS_KEYS = [
   { key: "abaam_salon_featured_2",   label: "Abaam Salon Featured Image 2", type: "image",    bucket: "site-assets", group: "Abaam Salon" },
   { key: "abaam_salon_featured_3",   label: "Abaam Salon Featured Image 3", type: "image",    bucket: "site-assets", group: "Abaam Salon" },
 
+  // ── SMS Notifications ─────────────────────────────────────
+  { key: "sms_recipient_phone", label: "SMS Notification Phone", type: "text", placeholder: "0594299293", group: "SMS Notifications" },
+
   // ── Login Page ────────────────────────────────────────────
   { key: "login_sidebar_url", label: "Sign-In Page Sidebar Image", type: "image", bucket: "site-assets", group: "Login Page" },
 
@@ -60,7 +64,13 @@ const SETTINGS_KEYS = [
   { key: "salon_gallery_6", label: "Salon Gallery Photo 6", type: "image", bucket: "site-assets", group: "Salon Gallery" },
 ] as const;
 
-const GROUPS = ["Branding", "Contact", "WhatsApp Numbers", "Social", "Homepage", "Branches", "Login Page", "Abaam Salon", "Salon General", "Salon Gallery"] as const;
+const GROUPS = ["Branding", "Contact", "WhatsApp Numbers", "SMS Notifications", "Social", "Homepage", "Branches", "Login Page", "Abaam Salon", "Salon General", "Salon Gallery"] as const;
+
+const FEATURE_TOGGLES = [
+  { key: "feature_cart",        label: "Visitor Shopping Cart",   description: "Show the cart button on all public pages so visitors can add items and send orders via WhatsApp." },
+  { key: "feature_salon_link",  label: "Salon Link in Footer",    description: "Show a Salon quick link in the website footer." },
+  { key: "feature_mid_banner",  label: "Mid-Section Banner",      description: "Show the banner image between the Branches and Products sections on the homepage." },
+] as const;
 
 const SALON_SERVICES_CONFIG = [
   { name: "Hair Relaxing",            imgKey: "salon_service_relax_url",     descKey: "salon_service_relax_desc",     priceKey: "salon_service_relax_price",     defaultPrice: "GH₵ 80+" },
@@ -204,6 +214,33 @@ export default function AdminSettingsPage() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* ── Feature Toggles ── */}
+      <div>
+        <h2 className="font-semibold text-[#0077B6] text-xs uppercase tracking-widest mb-3 border-b border-gray-100 pb-2">Feature Toggles</h2>
+        <div className="space-y-3">
+          {FEATURE_TOGGLES.map(({ key, label, description }) => {
+            const enabled = settings[key] !== "false";
+            return (
+              <div key={key} className="card p-5 flex items-center justify-between gap-4">
+                <div>
+                  <p className="font-semibold text-[#023E8A] text-sm">{label}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{description}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => saveSetting(key, enabled ? "false" : "true")}
+                  className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none ${enabled ? "bg-[#0077B6]" : "bg-gray-200"}`}
+                  aria-pressed={enabled ? "true" : "false"}
+                  title={`${enabled ? "Disable" : "Enable"} ${label}`}
+                >
+                  <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${enabled ? "translate-x-5" : "translate-x-0"}`} />
+                </button>
+              </div>
+            );
+          })}
         </div>
       </div>
 

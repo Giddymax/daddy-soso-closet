@@ -21,7 +21,7 @@ async function getBranchData() {
     supabase
       .from("site_settings")
       .select("key, value")
-      .in("key", ["tweapease_hero_url", "logo_url", "phone_number", "email", "instagram_url", "facebook_url", "footer_tagline", "tweapease_description", "tweapease_whatsapp"]),
+      .in("key", ["tweapease_hero_url", "logo_url", "phone_number", "email", "instagram_url", "facebook_url", "tiktok_url", "footer_tagline", "tweapease_description", "tweapease_whatsapp", "feature_cart", "feature_salon_link"]),
     supabase.from("categories").select("*").order("name"),
   ]);
 
@@ -77,10 +77,10 @@ export default async function TweapeasePage() {
             alt="Tweapease Branch"
             fill
             sizes="100vw"
-            className="object-cover object-center"
+            className="object-cover object-center contrast-110 saturate-110 brightness-105"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#2C1A0E]/80 to-[#5C3520]/45" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#2C1A0E]/60 to-[#5C3520]/25" />
           <div className="relative z-10 h-full flex flex-col justify-center px-8 max-w-7xl mx-auto">
             <span className="bg-[#C4954A] text-white text-xs font-bold px-3 py-1 rounded-full w-fit mb-3">Boutique</span>
             <h1 className="font-playfair text-4xl md:text-5xl font-bold text-white mb-2">
@@ -111,19 +111,23 @@ export default async function TweapeasePage() {
         />
       </main>
 
-      <CartDrawer
-        whatsappPhone={settings.tweapease_whatsapp || settings.phone_number}
-        branchId={branch?.id}
-        branchName="Tweapease Branch"
-        storageKey="tweapease"
-      />
+      {settings.feature_cart !== "false" && (
+        <CartDrawer
+          whatsappPhone={settings.tweapease_whatsapp || settings.phone_number}
+          branchId={branch?.id}
+          branchName="Tweapease Branch"
+          storageKey="tweapease"
+        />
+      )}
 
       <Footer
         instagramUrl={settings.instagram_url}
         facebookUrl={settings.facebook_url}
+        tiktokUrl={settings.tiktok_url}
         phone={settings.phone_number}
         email={settings.email}
         tagline={settings.footer_tagline}
+        showSalonLink={settings.feature_salon_link !== "false"}
       />
     </>
   );
