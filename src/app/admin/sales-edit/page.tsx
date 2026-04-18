@@ -1,10 +1,17 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import { Trash2, Save, ChevronDown, ChevronUp, Printer, ReceiptText } from "lucide-react";
+import { Trash2, Save, ChevronDown, ChevronUp, Printer, ReceiptText, Scissors } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase";
 import { formatCurrency, formatGhanaDateTime } from "@/lib/utils";
 import ReceiptModal from "@/components/dashboard/ReceiptModal";
 import type { CartItem } from "@/types";
+
+interface SalonItem {
+  id: string;
+  service_name: string;
+  quantity: number;
+  unit_price: number;
+}
 
 interface SaleRow {
   id: string;
@@ -18,6 +25,7 @@ interface SaleRow {
   branch: { display_name: string; location: string } | null;
   staff: { full_name: string } | null;
   sale_items: { id: string; quantity: number; unit_price: number; product: { name: string } | null }[];
+  salon_sale_items?: SalonItem[];
 }
 
 const PAY_LABEL: Record<string, string> = { cash: "Cash", momo: "MoMo", card: "Card" };
@@ -45,7 +53,7 @@ export default function AdminSalesPage() {
     setLoading(true);
     let query = supabase
       .from("sales")
-      .select("*, branch:branches(display_name, location), staff:staff(full_name), sale_items(id, quantity, unit_price, product:products(name))")
+      .select("*, branch:branches(display_name, location), staff:staff(full_name), sale_items(id, quantity, unit_price, product:products(name)), salon_sale_items(id, service_name, quantity, unit_price)")
       .order("created_at", { ascending: false })
       .limit(200);
 
@@ -106,13 +114,30 @@ export default function AdminSalesPage() {
   }
 
   function saleToCartItems(sale: SaleRow): CartItem[] {
-    return sale.sale_items.map((si) => ({
+    const productItems: CartItem[] = sale.sale_items.map((si) => ({
       product_id: si.id,
       name: si.product?.name ?? "Unknown",
       price: si.unit_price,
       quantity: si.quantity,
       max_quantity: 99,
     }));
+    const salonItems: CartItem[] = (sale.salon_sale_items ?? []).map((si) => ({
+      product_id: `salon-${si.id}`,
+      name: si.service_name,
+      price: si.unit_price,
+      quantity: si.quantity,
+      max_quantity: 99,
+    }));
+    return [...productItems, ...salonItems];
+  }
+
+  async function deleteSalonItem(itemId: string, saleId: string) {
+    await supabase.from("salon_sale_items").delete().eq("id", itemId);
+    setSales((prev) => prev.map((s) =>
+      s.id === saleId
+        ? { ...s, salon_sale_items: (s.salon_sale_items ?? []).filter((i) => i.id !== itemId) }
+        : s
+    ));
   }
 
   return (
@@ -220,6 +245,48 @@ export default function AdminSalesPage() {
                         </tbody>
                       </table>
                     </div>
+
+                    {/* Salon service items */}
+                    {(sale.salon_sale_items ?? []).length > 0 && (
+                      <div>
+                        <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center gap-1.5">
+                          <Scissors size={12} className="text-[#D4AF37]" /> Salon Services
+                        </h4>
+                        <table className="w-full text-xs">
+                          <thead>
+                            <tr className="text-gray-400 border-b border-gray-100">
+                              <th className="text-left pb-1.5">Service</th>
+                              <th className="text-center pb-1.5 w-12">Qty</th>
+                              <th className="text-right pb-1.5">Unit Price</th>
+                              <th className="text-right pb-1.5">Subtotal</th>
+                              <th className="pb-1.5 w-8 sr-only">Delete</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {(sale.salon_sale_items ?? []).map((si) => (
+                              <tr key={si.id} className="border-t border-gray-100">
+                                <td className="py-1.5 text-gray-700 flex items-center gap-1.5">
+                                  <Scissors size={10} className="text-[#D4AF37] shrink-0" />{si.service_name}
+                                </td>
+                                <td className="py-1.5 text-center text-gray-600">{si.quantity}</td>
+                                <td className="py-1.5 text-right text-gray-600">{formatCurrency(si.unit_price)}</td>
+                                <td className="py-1.5 text-right font-semibold text-[#023E8A]">{formatCurrency(si.quantity * si.unit_price)}</td>
+                                <td className="py-1.5 text-right">
+                                  <button
+                                    type="button"
+                                    onClick={() => deleteSalonItem(si.id, sale.id)}
+                                    title="Delete salon item"
+                                    className="text-red-400 hover:text-red-600 transition-colors"
+                                  >
+                                    <Trash2 size={12} />
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
 
                     {/* Edit fields */}
                     <div>

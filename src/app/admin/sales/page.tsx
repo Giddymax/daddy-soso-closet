@@ -153,6 +153,8 @@ export default function AdminSalesPage() {
           branch_id: selectedBranch.id, staff_id: staff.id,
           total_amount: total, payment_method: paymentMethod,
           receipt_number: receiptNumber,
+          customer_name: customerName || null,
+          customer_phone: customerPhone || null,
         })
         .select()
         .single();
@@ -170,12 +172,25 @@ export default function AdminSalesPage() {
         if (itemsError) throw itemsError;
       }
 
+      const salonItems = cart.filter((i) => i.product_id.startsWith("salon-"));
+      if (salonItems.length) {
+        await supabase.from("salon_sale_items").insert(
+          salonItems.map((i) => ({
+            sale_id: sale.id,
+            service_name: i.name,
+            quantity: i.quantity,
+            unit_price: i.price,
+          }))
+        );
+      }
+
       await fetch("/api/notify-sale", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           branchName: selectedBranch.display_name, receiptNumber,
-          items: cart.map((i) => ({ name: i.name, quantity: i.quantity, price: i.price })),
+          items: cart.filter((i) => !i.product_id.startsWith("salon-")).map((i) => ({ name: i.name, quantity: i.quantity, price: i.price })),
+          salonItems: cart.filter((i) => i.product_id.startsWith("salon-")).map((i) => ({ name: i.name, quantity: i.quantity, price: i.price })),
           total, staffName: staff.full_name, paymentMethod,
           customerName, customerPhone,
         }),
@@ -205,6 +220,7 @@ export default function AdminSalesPage() {
         <div className="flex gap-2 ml-auto">
           {branches.map((b) => (
             <button
+              type="button"
               key={b.id}
               onClick={() => setSelectedBranch(b)}
               className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
@@ -224,11 +240,11 @@ export default function AdminSalesPage() {
         <div className="lg:col-span-2 space-y-4">
           {isSalonBranch && (
             <div className="flex gap-2 p-1 bg-gray-100 rounded-xl w-fit">
-              <button onClick={() => setTab("products")}
+              <button type="button" onClick={() => setTab("products")}
                 className={`px-5 py-2 rounded-lg text-sm font-semibold transition-colors ${tab === "products" ? "bg-white text-[#023E8A] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>
                 Products
               </button>
-              <button onClick={() => setTab("salon")}
+              <button type="button" onClick={() => setTab("salon")}
                 className={`flex items-center gap-1.5 px-5 py-2 rounded-lg text-sm font-semibold transition-colors ${tab === "salon" ? "bg-white text-[#023E8A] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>
                 <Scissors size={14} /> Abaam Salon
               </button>
@@ -249,7 +265,7 @@ export default function AdminSalesPage() {
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[60vh] overflow-y-auto pr-1">
                   {filtered.map((p) => (
-                    <button key={p.id} onClick={() => addToCart(p)}
+                    <button type="button" key={p.id} onClick={() => addToCart(p)}
                       className="card p-3 text-left hover:border-[#D4AF37] border border-transparent transition-all hover:-translate-y-0.5">
                       <p className="font-semibold text-xs text-[#023E8A] leading-snug mb-1 line-clamp-2">{p.name}</p>
                       <p className="text-[#0077B6] font-bold text-sm">{formatCurrency(p.price)}</p>
@@ -266,7 +282,7 @@ export default function AdminSalesPage() {
               <p className="text-xs text-gray-400">Tap a service to add it to the cart.</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {salonServices.map((s) => (
-                  <button key={s.id} onClick={() => addSalonToCart(s)}
+                  <button type="button" key={s.id} onClick={() => addSalonToCart(s)}
                     className="card p-4 text-left hover:border-[#D4AF37] border border-transparent transition-all hover:-translate-y-0.5 group">
                     <div className="w-8 h-8 bg-[#0077B6]/10 rounded-full flex items-center justify-center mb-2 group-hover:bg-[#D4AF37]/20 transition-colors">
                       <Scissors size={15} className="text-[#0077B6]" />
@@ -298,15 +314,15 @@ export default function AdminSalesPage() {
                     <p className="text-xs text-[#0077B6]">{formatCurrency(item.price)}</p>
                   </div>
                   <div className="flex items-center gap-1">
-                    <button onClick={() => updateQty(item.product_id, -1)} className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center hover:bg-[#0077B6] hover:text-white transition-colors">
+                    <button type="button" title="Decrease quantity" onClick={() => updateQty(item.product_id, -1)} className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center hover:bg-[#0077B6] hover:text-white transition-colors">
                       <Minus size={12} />
                     </button>
                     <span className="text-sm font-semibold w-6 text-center">{item.quantity}</span>
-                    <button onClick={() => updateQty(item.product_id, 1)} className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center hover:bg-[#0077B6] hover:text-white transition-colors">
+                    <button type="button" title="Increase quantity" onClick={() => updateQty(item.product_id, 1)} className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center hover:bg-[#0077B6] hover:text-white transition-colors">
                       <Plus size={12} />
                     </button>
                   </div>
-                  <button onClick={() => removeFromCart(item.product_id)} className="text-red-400 hover:text-red-600 ml-1">
+                  <button type="button" title="Remove item" onClick={() => removeFromCart(item.product_id)} className="text-red-400 hover:text-red-600 ml-1">
                     <Trash2 size={14} />
                   </button>
                 </div>
@@ -319,6 +335,7 @@ export default function AdminSalesPage() {
             <div className="flex gap-2">
               {(["cash", "momo", "card"] as const).map((m) => (
                 <button
+                  type="button"
                   key={m}
                   onClick={() => setPaymentMethod(m)}
                   className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-colors ${paymentMethod === m ? "bg-[#0077B6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
@@ -335,6 +352,7 @@ export default function AdminSalesPage() {
               <span className="text-xl font-bold text-[#023E8A]">{formatCurrency(total)}</span>
             </div>
             <button
+              type="button"
               onClick={requestSale}
               disabled={cart.length === 0 || submitting}
               className="w-full bg-[#0077B6] text-white py-3 rounded-xl font-bold hover:bg-[#023E8A] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"

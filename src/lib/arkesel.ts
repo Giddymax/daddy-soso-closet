@@ -41,15 +41,12 @@ export function formatSalesSMS(params: {
   branchName: string;
   receiptNumber: string;
   items: Array<{ name: string; quantity: number; price: number }>;
+  salonItems?: Array<{ name: string; quantity: number; price: number }>;
   total: number;
   staffName: string;
   paymentMethod: string;
   dailyTotals: Array<{ branchName: string; total: number; count: number }>;
 }): string {
-  const itemLines = params.items
-    .map((i) => `  ${i.name} x${i.quantity} (GH\u20b5${i.price.toFixed(2)})`)
-    .join("\n");
-
   const now = new Date().toLocaleString("en-GH", {
     timeZone: "Africa/Accra",
     dateStyle: "short",
@@ -60,11 +57,30 @@ export function formatSalesSMS(params: {
     .map((b) => `  ${b.branchName}: GH\u20b5${b.total.toFixed(2)} (${b.count} sale${b.count !== 1 ? "s" : ""})`)
     .join("\n");
 
+  const hasProducts = params.items.length > 0;
+  const hasServices = (params.salonItems ?? []).length > 0;
+
+  let body = "";
+  if (hasProducts) {
+    const lines = params.items
+      .map((i) => `  ${i.name} x${i.quantity} (GH\u20b5${i.price.toFixed(2)})`)
+      .join("\n");
+    body += `Products:\n${lines}\n`;
+  }
+  if (hasServices) {
+    const lines = (params.salonItems ?? [])
+      .map((i) => `  ${i.name} x${i.quantity} (GH\u20b5${i.price.toFixed(2)})`)
+      .join("\n");
+    body += `${hasProducts ? "\n" : ""}Services Offered:\n${lines}\n`;
+  }
+  if (!hasProducts && !hasServices) {
+    body = "Items: (none)\n";
+  }
+
   return `[SALE] Daddy SoSo Closet
 Branch: ${params.branchName}
 Receipt: ${params.receiptNumber}
-Items:
-${itemLines}
+${body}
 Sale Total: GH\u20b5${params.total.toFixed(2)}
 Staff: ${params.staffName}
 Payment: ${params.paymentMethod.toUpperCase()}

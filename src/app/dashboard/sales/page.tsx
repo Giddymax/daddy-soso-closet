@@ -132,21 +132,35 @@ export default function SalesPage() {
           branch_id: branch.id, staff_id: staff.id,
           total_amount: total, payment_method: paymentMethod,
           receipt_number: receiptNumber,
+          customer_name: customerName || null,
+          customer_phone: customerPhone || null,
         })
         .select()
         .single();
 
       if (saleError) throw saleError;
 
-      // Only insert sale_items for real products (not salon services)
       const productItems = cart.filter((i) => !i.product_id.startsWith("salon-"));
       if (productItems.length) {
-        const items = productItems.map((i) => ({
-          sale_id: sale.id, product_id: i.product_id,
-          quantity: i.quantity, unit_price: i.price,
-        }));
-        const { error: itemsError } = await supabase.from("sale_items").insert(items);
+        const { error: itemsError } = await supabase.from("sale_items").insert(
+          productItems.map((i) => ({
+            sale_id: sale.id, product_id: i.product_id,
+            quantity: i.quantity, unit_price: i.price,
+          }))
+        );
         if (itemsError) throw itemsError;
+      }
+
+      const salonItems = cart.filter((i) => i.product_id.startsWith("salon-"));
+      if (salonItems.length) {
+        await supabase.from("salon_sale_items").insert(
+          salonItems.map((i) => ({
+            sale_id: sale.id,
+            service_name: i.name,
+            quantity: i.quantity,
+            unit_price: i.price,
+          }))
+        );
       }
 
       await fetch("/api/notify-sale", {
@@ -154,7 +168,8 @@ export default function SalesPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           branchName: branch.display_name, receiptNumber,
-          items: cart.map((i) => ({ name: i.name, quantity: i.quantity, price: i.price })),
+          items: cart.filter((i) => !i.product_id.startsWith("salon-")).map((i) => ({ name: i.name, quantity: i.quantity, price: i.price })),
+          salonItems: cart.filter((i) => i.product_id.startsWith("salon-")).map((i) => ({ name: i.name, quantity: i.quantity, price: i.price })),
           total, staffName: staff.full_name, paymentMethod,
           customerName, customerPhone,
         }),
@@ -181,7 +196,7 @@ export default function SalesPage() {
         {/* Tabs — only for boutique_salon branch */}
         {isSalonBranch && (
           <div className="flex gap-2 p-1 bg-gray-100 rounded-xl w-fit">
-            <button
+            <button type="button"
               onClick={() => setTab("products")}
               className={`px-5 py-2 rounded-lg text-sm font-semibold transition-colors ${
                 tab === "products"
@@ -191,7 +206,7 @@ export default function SalesPage() {
             >
               Products
             </button>
-            <button
+            <button type="button"
               onClick={() => setTab("salon")}
               className={`flex items-center gap-1.5 px-5 py-2 rounded-lg text-sm font-semibold transition-colors ${
                 tab === "salon"
@@ -224,6 +239,7 @@ export default function SalesPage() {
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[60vh] overflow-y-auto pr-1">
                 {filtered.map((p) => (
                   <button
+                    type="button"
                     key={p.id}
                     onClick={() => addToCart({ id: p.id, name: p.name, price: p.price }, p.inventory_quantity)}
                     className="card p-3 text-left hover:border-[#D4AF37] border border-transparent transition-all hover:-translate-y-0.5"
@@ -245,6 +261,7 @@ export default function SalesPage() {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {salonServices.map((s) => (
                 <button
+                  type="button"
                   key={s.id}
                   onClick={() => addToCart(s)}
                   className="card p-4 text-left hover:border-[#D4AF37] border border-transparent transition-all hover:-translate-y-0.5 group"
@@ -284,15 +301,15 @@ export default function SalesPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
-                  <button onClick={() => updateQty(item.product_id, -1)} className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center hover:bg-[#0077B6] hover:text-white transition-colors">
+                  <button type="button" title="Decrease quantity" onClick={() => updateQty(item.product_id, -1)} className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center hover:bg-[#0077B6] hover:text-white transition-colors">
                     <Minus size={12} />
                   </button>
                   <span className="text-sm font-semibold w-6 text-center">{item.quantity}</span>
-                  <button onClick={() => updateQty(item.product_id, 1)} className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center hover:bg-[#0077B6] hover:text-white transition-colors">
+                  <button type="button" title="Increase quantity" onClick={() => updateQty(item.product_id, 1)} className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center hover:bg-[#0077B6] hover:text-white transition-colors">
                     <Plus size={12} />
                   </button>
                 </div>
-                <button onClick={() => removeFromCart(item.product_id)} className="text-red-400 hover:text-red-600 ml-1">
+                <button type="button" title="Remove item" onClick={() => removeFromCart(item.product_id)} className="text-red-400 hover:text-red-600 ml-1">
                   <Trash2 size={14} />
                 </button>
               </div>
@@ -306,6 +323,7 @@ export default function SalesPage() {
           <div className="flex gap-2">
             {(["cash", "momo", "card"] as const).map((m) => (
               <button
+                type="button"
                 key={m}
                 onClick={() => setPaymentMethod(m)}
                 className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-colors ${paymentMethod === m ? "bg-[#0077B6] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
@@ -323,6 +341,7 @@ export default function SalesPage() {
             <span className="text-xl font-bold text-[#023E8A]">{formatCurrency(total)}</span>
           </div>
           <button
+            type="button"
             onClick={requestSale}
             disabled={cart.length === 0 || submitting}
             className="w-full bg-[#0077B6] text-white py-3 rounded-xl font-bold hover:bg-[#023E8A] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"

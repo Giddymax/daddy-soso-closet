@@ -5,7 +5,7 @@ import { sendSMS, formatSalesSMS } from "@/lib/arkesel";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { branchName, receiptNumber, items, total, staffName, paymentMethod } = body;
+    const { branchName, receiptNumber, items, salonItems, total, staffName, paymentMethod } = body;
 
     // Query today's cumulative totals for every branch
     const supabase = createClient(
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
     });
 
     const message = formatSalesSMS({
-      branchName, receiptNumber, items, total, staffName, paymentMethod, dailyTotals,
+      branchName, receiptNumber, items, salonItems, total, staffName, paymentMethod, dailyTotals,
     });
 
     const { data: phoneSetting } = await supabase
