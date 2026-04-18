@@ -184,7 +184,7 @@ export default function AdminSalesPage() {
         );
       }
 
-      await fetch("/api/notify-sale", {
+      fetch("/api/notify-sale", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

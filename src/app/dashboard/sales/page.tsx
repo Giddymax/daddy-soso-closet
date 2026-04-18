@@ -163,7 +163,7 @@ export default function SalesPage() {
         );
       }
 
-      await fetch("/api/notify-sale", {
+      fetch("/api/notify-sale", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
