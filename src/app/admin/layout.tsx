@@ -40,17 +40,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!user || role !== "admin") return null;
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] flex">
+    <div className="min-h-screen bg-[#EFF6FF] flex">
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-64 bg-[#2C1A0E] flex flex-col transition-transform duration-300 lg:translate-x-0 lg:static lg:flex",
+          "fixed inset-y-0 left-0 z-50 w-64 bg-[#023E8A] flex flex-col transition-transform duration-300 lg:translate-x-0 lg:static lg:flex",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         <div className="px-6 py-5 border-b border-white/10">
           <h2 className="font-playfair font-bold text-white text-lg">Daddy SoSo Closet</h2>
-          <span className="text-[#C4954A] text-xs font-bold bg-[#C4954A]/20 px-2 py-0.5 rounded-full">
+          <span className="text-[#D4AF37] text-xs font-bold bg-[#D4AF37]/20 px-2 py-0.5 rounded-full">
             Admin Panel
           </span>
         </div>
@@ -64,7 +64,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               className={cn(
                 "flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors",
                 pathname === href
-                  ? "bg-[#C4954A] text-white"
+                  ? "bg-[#D4AF37] text-white"
                   : "text-white/70 hover:bg-white/10 hover:text-white"
               )}
             >
@@ -83,7 +83,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </Link>
           <Link
             href="/dashboard"
-            className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-[#C4954A]/80 hover:bg-white/10 hover:text-[#C4954A] transition-colors"
+            className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-[#D4AF37]/80 hover:bg-white/10 hover:text-[#D4AF37] transition-colors"
           >
             <LayoutDashboard size={18} /> Staff Dashboard
           </Link>
@@ -105,13 +105,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <button className="lg:hidden p-2 text-stone-500" onClick={() => setSidebarOpen(!sidebarOpen)}>
             {sidebarOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
-          <span className="text-sm font-bold text-[#2C1A0E]">
+          <span className="text-sm font-bold text-[#023E8A]">
             {navItems.find((n) => n.href === pathname)?.label ?? "Admin"}
           </span>
           <div className="flex items-center gap-3">
             <Link
               href="/"
-              className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-[#8B5E3C] hover:text-[#2C1A0E] transition-colors"
+              className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-[#D4AF37] hover:text-[#023E8A] transition-colors"
             >
               <Home size={14} /> Main Site
             </Link>
