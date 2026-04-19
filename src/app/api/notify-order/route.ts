@@ -7,16 +7,20 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { branchName, customerName, customerPhone, customerLocation, items, total } = body;
 
+    console.log("notify-order: received request for", customerName, "items:", items?.length);
+
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
       { auth: { autoRefreshToken: false, persistSession: false } }
     );
 
-    const { data: settings } = await supabase
+    const { data: settings, error: settingsError } = await supabase
       .from("site_settings")
       .select("key, value")
       .in("key", ["sms_recipient_phone", "order_whatsapp_number"]);
+
+    if (settingsError) console.error("notify-order: settings fetch error:", settingsError.message);
 
     const map: Record<string, string> = {};
     (settings ?? []).forEach((r) => { map[r.key] = r.value; });
@@ -24,10 +28,17 @@ export async function POST(req: NextRequest) {
     const smsPhone      = map.sms_recipient_phone   || "0552315639";
     const whatsappPhone = map.order_whatsapp_number || "0201668641";
 
+    console.log("notify-order: sending to SMS:", smsPhone, "WhatsApp:", whatsappPhone);
+
     const message = formatOrderSMS({ branchName, customerName, customerPhone, customerLocation, items, total });
 
-    const recipients = [...new Set([smsPhone, whatsappPhone])];
-    await Promise.all(recipients.map((to) => sendSMS({ to, message })));
+    const [smsResult, waResult] = await Promise.allSettled([
+      sendSMS({ to: smsPhone, message }),
+      ...(smsPhone !== whatsappPhone ? [sendSMS({ to: whatsappPhone, message })] : []),
+    ]);
+
+    console.log("notify-order: SMS result:", smsResult);
+    if (waResult) console.log("notify-order: WhatsApp result:", waResult);
 
     return NextResponse.json({ success: true });
   } catch (err) {

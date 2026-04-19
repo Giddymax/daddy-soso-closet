@@ -55,18 +55,22 @@ export default function CartDrawer({
       }).catch(() => {});
     }
 
-    fetch("/api/notify-order", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        branchName,
-        customerName: form.name,
-        customerPhone: form.phone,
-        customerLocation: form.location,
-        items: items.map((i) => ({ name: i.name, quantity: i.quantity, price: i.price })),
-        total,
-      }),
-    }).catch(() => {});
+    try {
+      await fetch("/api/notify-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          branchName,
+          customerName: form.name,
+          customerPhone: form.phone,
+          customerLocation: form.location,
+          items: items.map((i) => ({ name: i.name, quantity: i.quantity, price: i.price })),
+          total,
+        }),
+      });
+    } catch (err) {
+      console.error("notify-order fetch failed:", err);
+    }
 
     clearCart();
     setForm({ name: "", phone: "", location: "" });
