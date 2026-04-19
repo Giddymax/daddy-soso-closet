@@ -113,6 +113,7 @@ export default async function TweapeasePage() {
 
       {settings.feature_cart !== "false" && (
         <CartDrawer
+          whatsappPhone={settings.tweapease_whatsapp || settings.phone_number}
           branchId={branch?.id}
           branchName="Tweapease Branch"
           storageKey="tweapease"

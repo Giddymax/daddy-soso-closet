@@ -61,7 +61,7 @@ export default function AdminInventoryPage() {
       product_id: restockItem.product?.id, branch_id: selectedBranch.id,
       quantity_added: qty, restocked_by: staff.id, notes: restockNote,
     });
-    await fetch("/api/notify-restock", {
+    fetch("/api/notify-restock", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
