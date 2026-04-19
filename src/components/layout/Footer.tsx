@@ -17,7 +17,7 @@ export default function Footer({
   facebookUrl,
   tiktokUrl,
   phone = "0594299293",
-  email = "zmdsosobadoo@gmail.com",
+  email = "daddysosocloset@gmail.com",
   tagline = "Fashion. Style. Elegance. Your premier boutique destination in Eastern Region, Ghana.",
   theme = "default",
   showSalonLink = true,

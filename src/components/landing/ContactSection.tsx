@@ -8,7 +8,7 @@ interface ContactSectionProps {
 
 export default function ContactSection({
   phone = "0594299293",
-  email = "zmdsosobadoo@gmail.com",
+  email = "daddysosocloset@gmail.com",
   mapEmbedUrl,
 }: ContactSectionProps) {
   return (
