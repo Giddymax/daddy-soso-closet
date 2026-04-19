@@ -46,7 +46,8 @@ const SETTINGS_KEYS = [
   { key: "abaam_salon_featured_3",   label: "Abaam Salon Featured Image 3", type: "image",    bucket: "site-assets", group: "Abaam Salon" },
 
   // ── SMS Notifications ─────────────────────────────────────
-  { key: "sms_recipient_phone", label: "SMS Notification Phone", type: "text", placeholder: "0594299293", group: "SMS Notifications" },
+  { key: "sms_recipient_phone",   label: "SMS Number (Sales & Restock alerts)",  type: "text", placeholder: "0552315639", group: "SMS Notifications" },
+  { key: "order_whatsapp_number", label: "WhatsApp Number (Order alerts)",       type: "text", placeholder: "0201668641", group: "SMS Notifications" },
 
   // ── Login Page ────────────────────────────────────────────
   { key: "login_sidebar_url", label: "Sign-In Page Sidebar Image", type: "image", bucket: "site-assets", group: "Login Page" },
