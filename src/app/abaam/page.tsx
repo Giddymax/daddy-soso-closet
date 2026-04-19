@@ -243,7 +243,6 @@ export default async function AbaamPage() {
 
       {settings.feature_cart !== "false" && (
         <CartDrawer
-          whatsappPhone={settings.abaam_whatsapp || settings.phone_number}
           branchId={branch?.id}
           branchName="Abaam Branch"
           storageKey="abaam"

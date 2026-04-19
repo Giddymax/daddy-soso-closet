@@ -109,3 +109,33 @@ Product: ${params.productName}
 By: ${params.staffName}
 Time: ${now}`;
 }
+
+export function formatOrderSMS(params: {
+  branchName?: string;
+  customerName: string;
+  customerPhone: string;
+  customerLocation: string;
+  items: Array<{ name: string; quantity: number; price: number }>;
+  total: number;
+}): string {
+  const now = new Date().toLocaleString("en-GH", {
+    timeZone: "Africa/Accra",
+    dateStyle: "short",
+    timeStyle: "short",
+  });
+
+  const itemLines = params.items
+    .map((i) => `  ${i.name} x${i.quantity} (GH\u20b5${(i.price * i.quantity).toFixed(2)})`)
+    .join("\n");
+
+  return `[ORDER] Daddy SoSo Closet${params.branchName ? `\nBranch: ${params.branchName}` : ""}
+Customer: ${params.customerName}
+Phone: ${params.customerPhone}
+Location: ${params.customerLocation}
+
+Items:
+${itemLines}
+
+Total: GH\u20b5${params.total.toFixed(2)}
+Time: ${now}`;
+}

@@ -1,26 +1,18 @@
 "use client";
 import { useState } from "react";
-import { ShoppingCart, X, Plus, Minus, Trash2, Send } from "lucide-react";
+import { ShoppingCart, X, Plus, Minus, Trash2, Send, CheckCircle } from "lucide-react";
 import { getCartStore } from "@/store/cartStore";
 import { formatCurrency } from "@/lib/utils";
 import SupabaseImage from "@/components/shared/SupabaseImage";
 
 interface CartDrawerProps {
-  whatsappPhone?: string;
   branchId?: string;
   branchName?: string;
   storageKey?: string;
 }
 
-function toWhatsAppNumber(phone: string): string {
-  const clean = phone.replace(/\s+/g, "");
-  if (clean.startsWith("+")) return clean.slice(1);
-  if (clean.startsWith("0")) return "233" + clean.slice(1);
-  return clean;
-}
 
 export default function CartDrawer({
-  whatsappPhone = "0594299293",
   branchId,
   branchName,
   storageKey = "main",
@@ -35,34 +27,10 @@ export default function CartDrawer({
   const [form, setForm] = useState({ name: "", phone: "", location: "" });
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [ordered, setOrdered] = useState(false);
 
   const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const count = items.reduce((sum, i) => sum + i.quantity, 0);
-
-  function buildWhatsAppMessage(): string {
-    const separator = "------------------------------";
-    const branchLine = branchName ? `Branch        : ${branchName}` : null;
-    const itemLines = items.map(
-      (i) => `${i.name}\n   Qty: ${i.quantity}   Subtotal: ${formatCurrency(i.price * i.quantity)}`
-    );
-    const lines = [
-      "NEW ORDER - Daddy SoSo Closet",
-      separator,
-      ...(branchLine ? [branchLine] : []),
-      `Customer Name : ${form.name}`,
-      `Phone Number  : ${form.phone}`,
-      `Location      : ${form.location}`,
-      separator,
-      "ITEMS ORDERED:",
-      "",
-      ...itemLines,
-      "",
-      separator,
-      `TOTAL         : ${formatCurrency(total)}`,
-      separator,
-    ];
-    return encodeURIComponent(lines.join("\n"));
-  }
 
   async function handleSendOrder() {
     if (!form.name.trim() || !form.phone.trim() || !form.location.trim()) {
@@ -76,29 +44,34 @@ export default function CartDrawer({
     setError("");
     setSubmitting(true);
 
-    // Deduct branch inventory if branchId is provided
     if (branchId) {
-      try {
-        await fetch("/api/branch-order", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            branchId,
-            items: items.map((i) => ({ product_id: i.product_id, quantity: i.quantity })),
-          }),
-        });
-      } catch {
-        // Non-fatal — order still goes to WhatsApp even if deduction fails
-      }
+      fetch("/api/branch-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          branchId,
+          items: items.map((i) => ({ product_id: i.product_id, quantity: i.quantity })),
+        }),
+      }).catch(() => {});
     }
 
-    const number = toWhatsAppNumber(whatsappPhone);
-    const message = buildWhatsAppMessage();
-    window.open(`https://wa.me/${number}?text=${message}`, "_blank");
+    fetch("/api/notify-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        branchName,
+        customerName: form.name,
+        customerPhone: form.phone,
+        customerLocation: form.location,
+        items: items.map((i) => ({ name: i.name, quantity: i.quantity, price: i.price })),
+        total,
+      }),
+    }).catch(() => {});
+
     clearCart();
     setForm({ name: "", phone: "", location: "" });
     setSubmitting(false);
-    setOpen(false);
+    setOrdered(true);
   }
 
   return (
@@ -158,8 +131,28 @@ export default function CartDrawer({
           </button>
         </div>
 
+        {/* Success state */}
+        {ordered && (
+          <div className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-4">
+            <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
+              <CheckCircle size={36} className="text-green-600" />
+            </div>
+            <div>
+              <h3 className="font-playfair text-xl font-bold text-[#2C1A0E] mb-1">Order Received!</h3>
+              <p className="text-sm text-stone-500">Thank you for your order. We&apos;ll reach out to you shortly to confirm.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => { setOrdered(false); setOpen(false); }}
+              className="mt-2 px-6 py-2.5 bg-[#2C1A0E] text-white rounded-xl text-sm font-semibold hover:bg-[#8B5E3C] transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        )}
+
         {/* Items */}
-        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+        {!ordered && <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-40 text-stone-400">
               <ShoppingCart size={36} className="mb-2 opacity-30" />
@@ -227,10 +220,10 @@ export default function CartDrawer({
               </div>
             ))
           )}
-        </div>
+        </div>}
 
         {/* Footer */}
-        {items.length > 0 && (
+        {!ordered && items.length > 0 && (
           <div className="border-t border-stone-100 px-5 py-4 space-y-4 bg-[#FAF8F5]">
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold text-stone-600">Total</span>
@@ -263,10 +256,10 @@ export default function CartDrawer({
               type="button"
               onClick={handleSendOrder}
               disabled={submitting}
-              className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white font-bold py-3 rounded-xl transition-colors text-sm disabled:opacity-60"
+              className="w-full flex items-center justify-center gap-2 bg-[#2C1A0E] hover:bg-[#8B5E3C] text-white font-bold py-3 rounded-xl transition-colors text-sm disabled:opacity-60"
             >
               <Send size={16} />
-              {submitting ? "Sending..." : "Send Order via WhatsApp"}
+              {submitting ? "Placing Order…" : "Place Order"}
             </button>
           </div>
         )}

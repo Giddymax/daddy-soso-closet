@@ -111,7 +111,7 @@ export default async function HomePage() {
       </main>
 
       {settings.feature_cart !== "false" && (
-        <CartDrawer whatsappPhone={settings.whatsapp_number || settings.phone_number} />
+        <CartDrawer />
       )}
 
       <Footer
