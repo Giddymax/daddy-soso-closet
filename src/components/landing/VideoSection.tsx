@@ -36,7 +36,7 @@ export default function VideoSection({ videos, bgUrl }: VideoSectionProps) {
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={bgUrl} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-[#023E8A]/80" />
+            <div className="absolute inset-0 bg-[#023E8A]/50" />
           </>
         )}
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
