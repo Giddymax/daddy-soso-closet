@@ -109,6 +109,18 @@ export interface CartItem {
   image_url?: string;
 }
 
+export interface Video {
+  id: string;
+  title: string;
+  description?: string;
+  video_url: string;
+  thumbnail_url?: string;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface SiteSettingsMap {
   logo_url: string;
   hero_image_url: string;

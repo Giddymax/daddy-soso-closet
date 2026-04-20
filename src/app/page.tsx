@@ -7,13 +7,14 @@ import BranchCard from "@/components/landing/BranchCard";
 import MidBanner from "@/components/landing/MidBanner";
 import ProductGallery from "@/components/landing/ProductGallery";
 import ContactSection from "@/components/landing/ContactSection";
+import VideoSection from "@/components/landing/VideoSection";
 import CartDrawer from "@/components/landing/CartDrawer";
 import { ProductSkeleton } from "@/components/shared/LoadingSkeleton";
 
 async function getPageData() {
   const supabase = await createServerClient();
 
-  const [settingsRes, productsRes, categoriesRes] = await Promise.all([
+  const [settingsRes, productsRes, categoriesRes, videosRes] = await Promise.all([
     supabase.from("site_settings").select("key, value"),
     supabase
       .from("products")
@@ -21,6 +22,11 @@ async function getPageData() {
       .eq("is_active", true)
       .order("created_at", { ascending: false }),
     supabase.from("categories").select("*").order("name"),
+    supabase
+      .from("site_videos")
+      .select("*")
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true }),
   ]);
 
   const settingsMap: Record<string, string> = {};
@@ -32,11 +38,12 @@ async function getPageData() {
     settings: settingsMap,
     products: productsRes.data ?? [],
     categories: categoriesRes.data ?? [],
+    videos: videosRes.data ?? [],
   };
 }
 
 export default async function HomePage() {
-  const { settings, products, categories } = await getPageData();
+  const { settings, products, categories, videos } = await getPageData();
 
   return (
     <>
@@ -101,6 +108,9 @@ export default async function HomePage() {
         >
           <ProductGallery products={products} categories={categories} branchConfig={undefined} />
         </Suspense>
+
+        {/* Videos */}
+        <VideoSection videos={videos} />
 
         {/* Contact */}
         <ContactSection

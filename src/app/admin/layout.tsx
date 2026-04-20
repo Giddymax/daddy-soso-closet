@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard, BarChart2, Package,
   Users, FileEdit, Settings, LogOut, Menu, X,
-  ShoppingCart, Boxes, Home,
+  ShoppingCart, Boxes, Home, Video,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
@@ -19,6 +19,7 @@ const navItems = [
   { href: "/admin/products", label: "Products", icon: Package },
   { href: "/admin/staff", label: "Staff", icon: Users },
   { href: "/admin/sales-edit", label: "Sales", icon: FileEdit },
+  { href: "/admin/videos", label: "Videos", icon: Video },
   { href: "/admin/settings", label: "Site Settings", icon: Settings },
 ];
 
