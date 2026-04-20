@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import {
-  Plus, Trash2, ToggleLeft, ToggleRight, Loader2, X,
-  Upload, Play, GripVertical, AlertTriangle, Video,
+  Plus, Pencil, Trash2, ToggleLeft, ToggleRight, Loader2, X,
+  Upload, Play, AlertTriangle, Video,
 } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase";
 import type { Video as VideoType } from "@/types";
@@ -12,6 +12,7 @@ export default function AdminVideosPage() {
   const [videos, setVideos] = useState<VideoType[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [editVideo, setEditVideo] = useState<VideoType | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [confirmDelete, setConfirmDelete] = useState<VideoType | null>(null);
@@ -39,10 +40,31 @@ export default function AdminVideosPage() {
   useEffect(() => { load(); }, [load]);
 
   function openAdd() {
+    setEditVideo(null);
     setForm({ title: "", description: "", video_url: "", useExternalUrl: false });
     setVideoFile(null);
     setThumbnailFile(null);
     setThumbnailPreview("");
+    setSaveError("");
+    setUploadProgress("");
+    setShowForm(true);
+  }
+
+  function openEdit(v: VideoType) {
+    setEditVideo(v);
+    const isExternal =
+      v.video_url.includes("youtube.com") ||
+      v.video_url.includes("youtu.be") ||
+      v.video_url.includes("vimeo.com");
+    setForm({
+      title: v.title,
+      description: v.description ?? "",
+      video_url: v.video_url,
+      useExternalUrl: isExternal,
+    });
+    setVideoFile(null);
+    setThumbnailFile(null);
+    setThumbnailPreview(v.thumbnail_url ?? "");
     setSaveError("");
     setUploadProgress("");
     setShowForm(true);
@@ -63,15 +85,15 @@ export default function AdminVideosPage() {
 
   async function handleSave() {
     if (!form.title) { setSaveError("Title is required."); return; }
-    if (!form.useExternalUrl && !videoFile) { setSaveError("Please upload a video file or use an external URL."); return; }
+    if (!editVideo && !form.useExternalUrl && !videoFile) { setSaveError("Please upload a video file or use an external URL."); return; }
     if (form.useExternalUrl && !form.video_url) { setSaveError("Please enter a video URL."); return; }
 
     setSaving(true);
     setSaveError("");
 
     try {
-      let videoUrl = form.video_url;
-      let thumbnailUrl = "";
+      let videoUrl = form.video_url || (editVideo?.video_url ?? "");
+      let thumbnailUrl = editVideo?.thumbnail_url ?? "";
 
       if (!form.useExternalUrl && videoFile) {
         setUploadProgress("Uploading video…");
@@ -99,18 +121,31 @@ export default function AdminVideosPage() {
       }
 
       setUploadProgress("Saving…");
-      const { error } = await supabase.from("site_videos").insert({
-        title: form.title,
-        description: form.description,
-        video_url: videoUrl,
-        thumbnail_url: thumbnailUrl || null,
-        is_active: true,
-        sort_order: videos.length,
-        updated_at: new Date().toISOString(),
-      });
-      if (error) throw new Error(error.message);
+
+      if (editVideo) {
+        const { error } = await supabase.from("site_videos").update({
+          title: form.title,
+          description: form.description,
+          video_url: videoUrl,
+          thumbnail_url: thumbnailUrl || null,
+          updated_at: new Date().toISOString(),
+        }).eq("id", editVideo.id);
+        if (error) throw new Error(error.message);
+      } else {
+        const { error } = await supabase.from("site_videos").insert({
+          title: form.title,
+          description: form.description,
+          video_url: videoUrl,
+          thumbnail_url: thumbnailUrl || null,
+          is_active: true,
+          sort_order: videos.length,
+          updated_at: new Date().toISOString(),
+        });
+        if (error) throw new Error(error.message);
+      }
 
       setShowForm(false);
+      setEditVideo(null);
       load();
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : "Failed to save video");
@@ -210,13 +245,22 @@ export default function AdminVideosPage() {
                       ? <ToggleRight size={22} className="text-green-500" />
                       : <ToggleLeft size={22} />}
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => setConfirmDelete(v)}
-                    className="flex items-center gap-1 bg-red-50 text-red-500 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-500 hover:text-white transition-colors"
-                  >
-                    <Trash2 size={12} /> Delete
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => openEdit(v)}
+                      className="flex items-center gap-1 bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-[#0077B6] hover:text-white transition-colors"
+                    >
+                      <Pencil size={12} /> Edit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setConfirmDelete(v)}
+                      className="flex items-center gap-1 bg-red-50 text-red-500 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-500 hover:text-white transition-colors"
+                    >
+                      <Trash2 size={12} /> Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -229,8 +273,8 @@ export default function AdminVideosPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="font-playfair font-bold text-[#023E8A] text-lg">Add Video</h3>
-              <button type="button" onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600" aria-label="Close">
+              <h3 className="font-playfair font-bold text-[#023E8A] text-lg">{editVideo ? "Edit Video" : "Add Video"}</h3>
+              <button type="button" onClick={() => { setShowForm(false); setEditVideo(null); }} className="text-gray-400 hover:text-gray-600" aria-label="Close">
                 <X size={20} />
               </button>
             </div>
@@ -306,9 +350,11 @@ export default function AdminVideosPage() {
                     <Upload size={20} className="text-gray-400 flex-shrink-0" />
                     <div>
                       <p className="text-sm font-semibold text-[#0077B6]">
-                        {videoFile ? videoFile.name : "Click to upload video"}
+                        {videoFile ? videoFile.name : editVideo ? "Click to replace video file" : "Click to upload video"}
                       </p>
-                      <p className="text-xs text-gray-400 mt-0.5">MP4, MOV, WEBM — max 500MB</p>
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        {editVideo ? "Leave blank to keep existing video" : "MP4, MOV, WEBM — max 500MB"}
+                      </p>
                     </div>
                     <input
                       type="file"
@@ -355,7 +401,7 @@ export default function AdminVideosPage() {
               <div className="flex gap-3 pt-2">
                 <button
                   type="button"
-                  onClick={() => setShowForm(false)}
+                  onClick={() => { setShowForm(false); setEditVideo(null); }}
                   className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold hover:bg-gray-50"
                 >
                   Cancel
@@ -366,7 +412,7 @@ export default function AdminVideosPage() {
                   disabled={saving}
                   className="flex-1 py-2.5 rounded-xl bg-[#0077B6] text-white text-sm font-semibold hover:bg-[#023E8A] disabled:opacity-50 flex items-center justify-center gap-2"
                 >
-                  {saving ? <><Loader2 size={14} className="animate-spin" /> Saving…</> : "Save Video"}
+                  {saving ? <><Loader2 size={14} className="animate-spin" /> Saving…</> : editVideo ? "Save Changes" : "Save Video"}
                 </button>
               </div>
             </div>
