@@ -78,10 +78,10 @@ export default function AdminVideosPage() {
         const ext = videoFile.name.split(".").pop();
         const path = `videos/${Date.now()}.${ext}`;
         const { error: uploadError } = await supabase.storage
-          .from("site-videos")
+          .from("site-assets")
           .upload(path, videoFile, { contentType: videoFile.type });
         if (uploadError) throw new Error(`Video upload failed: ${uploadError.message}`);
-        const { data: urlData } = supabase.storage.from("site-videos").getPublicUrl(path);
+        const { data: urlData } = supabase.storage.from("site-assets").getPublicUrl(path);
         videoUrl = urlData.publicUrl;
       }
 
@@ -90,10 +90,10 @@ export default function AdminVideosPage() {
         const ext = thumbnailFile.name.split(".").pop();
         const path = `thumbnails/${Date.now()}.${ext}`;
         const { error: thumbError } = await supabase.storage
-          .from("site-videos")
+          .from("site-assets")
           .upload(path, thumbnailFile, { contentType: thumbnailFile.type });
         if (!thumbError) {
-          const { data: thumbUrlData } = supabase.storage.from("site-videos").getPublicUrl(path);
+          const { data: thumbUrlData } = supabase.storage.from("site-assets").getPublicUrl(path);
           thumbnailUrl = thumbUrlData.publicUrl;
         }
       }
@@ -145,6 +145,7 @@ export default function AdminVideosPage() {
           <p className="text-gray-500 text-sm mt-1">Upload videos that appear on the main website.</p>
         </div>
         <button
+          type="button"
           onClick={openAdd}
           className="flex items-center gap-2 bg-[#0077B6] text-white px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#023E8A] transition-colors"
         >
@@ -199,15 +200,18 @@ export default function AdminVideosPage() {
                 )}
                 <div className="flex items-center justify-between mt-3">
                   <button
+                    type="button"
                     onClick={() => toggleActive(v)}
                     className="text-gray-400 hover:text-[#0077B6] transition-colors"
                     title={v.is_active ? "Deactivate" : "Activate"}
+                    aria-label={v.is_active ? "Deactivate video" : "Activate video"}
                   >
                     {v.is_active
                       ? <ToggleRight size={22} className="text-green-500" />
                       : <ToggleLeft size={22} />}
                   </button>
                   <button
+                    type="button"
                     onClick={() => setConfirmDelete(v)}
                     className="flex items-center gap-1 bg-red-50 text-red-500 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-500 hover:text-white transition-colors"
                   >
@@ -226,7 +230,7 @@ export default function AdminVideosPage() {
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h3 className="font-playfair font-bold text-[#023E8A] text-lg">Add Video</h3>
-              <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600">
+              <button type="button" onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600" aria-label="Close">
                 <X size={20} />
               </button>
             </div>
@@ -350,12 +354,14 @@ export default function AdminVideosPage() {
 
               <div className="flex gap-3 pt-2">
                 <button
+                  type="button"
                   onClick={() => setShowForm(false)}
                   className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold hover:bg-gray-50"
                 >
                   Cancel
                 </button>
                 <button
+                  type="button"
                   onClick={handleSave}
                   disabled={saving}
                   className="flex-1 py-2.5 rounded-xl bg-[#0077B6] text-white text-sm font-semibold hover:bg-[#023E8A] disabled:opacity-50 flex items-center justify-center gap-2"
@@ -381,12 +387,14 @@ export default function AdminVideosPage() {
             </p>
             <div className="flex gap-3">
               <button
+                type="button"
                 onClick={() => setConfirmDelete(null)}
                 className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold hover:bg-gray-50"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={() => handleDelete(confirmDelete)}
                 disabled={deleting}
                 className="flex-1 py-2.5 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-600 disabled:opacity-50 flex items-center justify-center gap-2"
