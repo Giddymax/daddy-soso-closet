@@ -5,6 +5,7 @@ import type { Video } from "@/types";
 
 interface VideoSectionProps {
   videos: Video[];
+  bgUrl?: string;
 }
 
 function getEmbedUrl(url: string): string | null {
@@ -23,15 +24,22 @@ function isExternalEmbed(url: string) {
   return url.includes("youtube.com") || url.includes("youtu.be") || url.includes("vimeo.com");
 }
 
-export default function VideoSection({ videos }: VideoSectionProps) {
+export default function VideoSection({ videos, bgUrl }: VideoSectionProps) {
   const [activeVideo, setActiveVideo] = useState<Video | null>(null);
 
   if (videos.length === 0) return null;
 
   return (
     <>
-      <section id="videos" className="py-20 bg-[#023E8A]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="videos" className="py-20 relative bg-[#023E8A]">
+        {bgUrl && (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={bgUrl} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-[#023E8A]/80" />
+          </>
+        )}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <p className="text-[#D4AF37] font-semibold text-sm uppercase tracking-widest mb-2">
               Watch & Explore
@@ -45,6 +53,7 @@ export default function VideoSection({ videos }: VideoSectionProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {videos.map((video) => (
               <button
+                type="button"
                 key={video.id}
                 onClick={() => setActiveVideo(video)}
                 className="group relative bg-gray-900 rounded-2xl overflow-hidden aspect-video focus:outline-none focus:ring-2 focus:ring-[#D4AF37] shadow-lg hover:shadow-2xl transition-shadow"
@@ -90,6 +99,7 @@ export default function VideoSection({ videos }: VideoSectionProps) {
             onClick={(e) => e.stopPropagation()}
           >
             <button
+              type="button"
               onClick={() => setActiveVideo(null)}
               className="absolute -top-10 right-0 text-white/70 hover:text-white transition-colors"
               aria-label="Close video"

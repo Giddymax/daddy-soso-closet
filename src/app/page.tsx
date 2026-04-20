@@ -110,7 +110,7 @@ export default async function HomePage() {
         </Suspense>
 
         {/* Videos */}
-        <VideoSection videos={videos} />
+        <VideoSection videos={videos} bgUrl={settings.videos_bg_url || undefined} />
 
         {/* Contact */}
         <ContactSection

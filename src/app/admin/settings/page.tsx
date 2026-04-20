@@ -28,6 +28,7 @@ const SETTINGS_KEYS = [
   // ── Homepage Images ───────────────────────────────────────
   { key: "hero_image_url",   label: "Main Hero Image",           type: "image",    bucket: "site-assets", group: "Homepage" },
   { key: "mid_hero_url",     label: "Mid-Section Banner Image",  type: "image",    bucket: "site-assets", group: "Homepage" },
+  { key: "videos_bg_url",    label: "Videos Section Background", type: "image",    bucket: "site-assets", group: "Homepage" },
 
   // ── Branches ──────────────────────────────────────────────
   { key: "tweapease_hero_url",        label: "Tweapease Branch Image",       type: "image",    bucket: "site-assets", group: "Branches" },
@@ -234,7 +235,7 @@ export default function AdminSettingsPage() {
                   type="button"
                   onClick={() => saveSetting(key, enabled ? "false" : "true")}
                   className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none ${enabled ? "bg-[#0077B6]" : "bg-gray-200"}`}
-                  aria-pressed={enabled ? "true" : "false"}
+                  aria-pressed={enabled}
                   title={`${enabled ? "Disable" : "Enable"} ${label}`}
                 >
                   <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${enabled ? "translate-x-5" : "translate-x-0"}`} />
