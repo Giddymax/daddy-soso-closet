@@ -70,11 +70,24 @@ export default function InventoryPage() {
     return <span className="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full font-bold">In Stock</span>;
   }
 
+  if (!branch) {
+    return (
+      <div className="space-y-6">
+        <h1 className="font-playfair text-2xl font-bold text-[#023E8A]">Inventory</h1>
+        <div className="card p-10 text-center text-gray-400">
+          <Package size={36} className="mx-auto mb-3 opacity-30" />
+          <p className="font-medium">No branch assigned to your account.</p>
+          <p className="text-sm mt-1">Contact your admin to be assigned to a branch.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="font-playfair text-2xl font-bold text-[#023E8A] mb-1">Inventory</h1>
-        <p className="text-gray-500 text-sm">{branch?.display_name}</p>
+        <p className="text-gray-500 text-sm">{branch.display_name}</p>
       </div>
 
       {!isAdmin && (
@@ -159,8 +172,8 @@ export default function InventoryPage() {
                 />
               </div>
               <div className="flex gap-3">
-                <button onClick={() => setRestockItem(null)} className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold hover:bg-gray-50">Cancel</button>
-                <button onClick={handleRestock} disabled={!restockQty || Number(restockQty) <= 0 || restocking}
+                <button type="button" onClick={() => setRestockItem(null)} className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold hover:bg-gray-50">Cancel</button>
+                <button type="button" onClick={handleRestock} disabled={!restockQty || Number(restockQty) <= 0 || restocking}
                   className="flex-1 py-2.5 rounded-xl bg-[#0077B6] text-white text-sm font-semibold hover:bg-[#023E8A] disabled:opacity-50 transition-colors">
                   {restocking ? "Saving…" : "Confirm Restock"}
                 </button>

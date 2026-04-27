@@ -41,9 +41,7 @@ export default function AdminProductsPage() {
     ]);
     setProducts((prodsRes.data as (Product & { category?: Category })[]) ?? []);
     setCategories(catsRes.data ?? []);
-    const loadedBranches = (branchesRes.data ?? []) as Branch[];
-    setBranches(loadedBranches);
-    setSelectedBranchIds(loadedBranches.map((b) => b.id));
+    setBranches((branchesRes.data ?? []) as Branch[]);
     setLoading(false);
   }, [supabase]);
 
@@ -52,8 +50,9 @@ export default function AdminProductsPage() {
   function openAdd() {
     setEditProduct(null);
     setForm({ name: "", description: "", category_id: "", price: "" });
-    setImageFile(null); setImagePreview("");
-    setSelectedBranchIds(branches.map((b) => b.id));
+    setImageFile(null);
+    setImagePreview("");
+    setSelectedBranchIds([]); // no branches pre-selected — admin must explicitly choose
     setShowForm(true);
   }
 
@@ -113,8 +112,9 @@ export default function AdminProductsPage() {
       load();
     } catch (err) {
       setSaveError(err instanceof Error ? err.message : "Failed to save product");
+    } finally {
+      setSaving(false);
     }
-    finally { setSaving(false); }
   }
 
   async function handleDelete(p: Product) {
@@ -177,12 +177,18 @@ export default function AdminProductsPage() {
           <p className="text-gray-500 text-sm mt-1">Manage inventory prices and visibility.</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => { setShowCategoryManager(true); setCategoryError(""); }}
-            className="flex items-center gap-2 border border-[#0077B6] text-[#0077B6] px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#0077B6] hover:text-white transition-colors">
+          <button
+            type="button"
+            onClick={() => { setShowCategoryManager(true); setCategoryError(""); }}
+            className="flex items-center gap-2 border border-[#0077B6] text-[#0077B6] px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#0077B6] hover:text-white transition-colors"
+          >
             <Tag size={15} /> Manage Categories
           </button>
-          <button onClick={openAdd}
-            className="flex items-center gap-2 bg-[#0077B6] text-white px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#023E8A] transition-colors">
+          <button
+            type="button"
+            onClick={openAdd}
+            className="flex items-center gap-2 bg-[#0077B6] text-white px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#023E8A] transition-colors"
+          >
             <Plus size={16} /> Add Product
           </button>
         </div>
@@ -197,7 +203,7 @@ export default function AdminProductsPage() {
                 <th className="text-left px-4 py-3 text-gray-500 font-medium">Category</th>
                 <th className="text-right px-4 py-3 text-gray-500 font-medium">Price</th>
                 <th className="text-center px-4 py-3 text-gray-500 font-medium">Status</th>
-                <th className="px-4 py-3" />
+                <th className="text-right px-4 py-3 text-gray-500 font-medium sr-only">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -226,18 +232,30 @@ export default function AdminProductsPage() {
                       <td className="px-4 py-3 text-gray-500">{p.category?.name ?? "—"}</td>
                       <td className="px-4 py-3 text-right font-bold text-[#0077B6]">{formatCurrency(p.price)}</td>
                       <td className="px-4 py-3 text-center">
-                        <button onClick={() => toggleActive(p)} className="text-gray-400 hover:text-[#0077B6] transition-colors">
+                        <button
+                          type="button"
+                          onClick={() => toggleActive(p)}
+                          title={p.is_active ? "Deactivate product" : "Activate product"}
+                          aria-label={p.is_active ? `Deactivate ${p.name}` : `Activate ${p.name}`}
+                          className="text-gray-400 hover:text-[#0077B6] transition-colors"
+                        >
                           {p.is_active ? <ToggleRight size={24} className="text-green-500" /> : <ToggleLeft size={24} />}
                         </button>
                       </td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex items-center gap-2 justify-end">
-                          <button onClick={() => openEdit(p)}
-                            className="flex items-center gap-1 bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-[#0077B6] hover:text-white transition-colors">
+                          <button
+                            type="button"
+                            onClick={() => openEdit(p)}
+                            className="flex items-center gap-1 bg-gray-100 text-gray-700 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-[#0077B6] hover:text-white transition-colors"
+                          >
                             <Pencil size={12} /> Edit
                           </button>
-                          <button onClick={() => setConfirmDelete(p)}
-                            className="flex items-center gap-1 bg-red-50 text-red-500 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-500 hover:text-white transition-colors">
+                          <button
+                            type="button"
+                            onClick={() => setConfirmDelete(p)}
+                            className="flex items-center gap-1 bg-red-50 text-red-500 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-red-500 hover:text-white transition-colors"
+                          >
                             <Trash2 size={12} /> Delete
                           </button>
                         </div>
@@ -261,7 +279,14 @@ export default function AdminProductsPage() {
               <h3 className="font-playfair font-bold text-[#023E8A] text-lg">
                 {editProduct ? "Edit Product" : "Add Product"}
               </h3>
-              <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600"><X size={20} /></button>
+              <button
+                type="button"
+                onClick={() => setShowForm(false)}
+                aria-label="Close"
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X size={20} />
+              </button>
             </div>
             <div className="space-y-4">
               <div>
@@ -285,37 +310,60 @@ export default function AdminProductsPage() {
                 </div>
               </div>
 
-              {[
-                { label: "Product Name", key: "name", type: "text", placeholder: "e.g. Blue Floral Dress" },
-                { label: "Price (₵)", key: "price", type: "number", placeholder: "e.g. 150" },
-              ].map(({ label, key, type, placeholder }) => (
-                <div key={key}>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">{label}</label>
-                  <input type={type} placeholder={placeholder} value={form[key as keyof typeof form]}
-                    onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#0077B6] focus:outline-none"
-                  />
-                </div>
-              ))}
+              <div>
+                <label htmlFor="prod-name" className="block text-xs font-semibold text-gray-600 mb-1.5">Product Name</label>
+                <input
+                  id="prod-name"
+                  type="text"
+                  placeholder="e.g. Blue Floral Dress"
+                  value={form.name}
+                  onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#0077B6] focus:outline-none"
+                />
+              </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Category</label>
-                <select value={form.category_id} onChange={(e) => setForm((f) => ({ ...f, category_id: e.target.value }))}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#0077B6] focus:outline-none">
+                <label htmlFor="prod-price" className="block text-xs font-semibold text-gray-600 mb-1.5">Price (₵)</label>
+                <input
+                  id="prod-price"
+                  type="number"
+                  placeholder="e.g. 150"
+                  value={form.price}
+                  onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#0077B6] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="prod-category" className="block text-xs font-semibold text-gray-600 mb-1.5">Category</label>
+                <select
+                  id="prod-category"
+                  title="Select product category"
+                  value={form.category_id}
+                  onChange={(e) => setForm((f) => ({ ...f, category_id: e.target.value }))}
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#0077B6] focus:outline-none"
+                >
                   <option value="">Select category</option>
                   {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Description (optional)</label>
-                <textarea value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-                  rows={3} className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#0077B6] focus:outline-none resize-none" />
+                <label htmlFor="prod-description" className="block text-xs font-semibold text-gray-600 mb-1.5">Description (optional)</label>
+                <textarea
+                  id="prod-description"
+                  title="Product description"
+                  placeholder="Optional product description…"
+                  value={form.description}
+                  onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+                  rows={3}
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#0077B6] focus:outline-none resize-none"
+                />
               </div>
 
               {!editProduct && branches.length > 0 && (
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Add to Branch(es)</label>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Add to Branch(es) *</label>
                   <div className="space-y-2">
                     {branches.map((b) => (
                       <label key={b.id} className="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-gray-200 hover:bg-blue-50 cursor-pointer transition-colors">
@@ -334,7 +382,7 @@ export default function AdminProductsPage() {
                     ))}
                   </div>
                   {selectedBranchIds.length === 0 && (
-                    <p className="text-amber-600 text-xs mt-1.5">Select at least one branch.</p>
+                    <p className="text-amber-600 text-xs mt-1.5">Select at least one branch to stock this product.</p>
                   )}
                 </div>
               )}
@@ -343,9 +391,19 @@ export default function AdminProductsPage() {
                 <p className="text-red-500 text-xs bg-red-50 px-3 py-2 rounded-lg">{saveError}</p>
               )}
               <div className="flex gap-3 pt-2">
-                <button onClick={() => setShowForm(false)} className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold hover:bg-gray-50">Cancel</button>
-                <button onClick={handleSave} disabled={saving || (!editProduct && selectedBranchIds.length === 0)}
-                  className="flex-1 py-2.5 rounded-xl bg-[#0077B6] text-white text-sm font-semibold hover:bg-[#023E8A] disabled:opacity-50 flex items-center justify-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSave}
+                  disabled={saving || (!editProduct && selectedBranchIds.length === 0)}
+                  className="flex-1 py-2.5 rounded-xl bg-[#0077B6] text-white text-sm font-semibold hover:bg-[#023E8A] disabled:opacity-50 flex items-center justify-center gap-2"
+                >
                   {saving ? <><Loader2 size={14} className="animate-spin" /> Saving…</> : "Save Product"}
                 </button>
               </div>
@@ -360,21 +418,33 @@ export default function AdminProductsPage() {
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
             <div className="flex items-center justify-between mb-5">
               <h3 className="font-playfair font-bold text-[#023E8A] text-lg">Manage Categories</h3>
-              <button onClick={() => { setShowCategoryManager(false); setCategoryError(""); setNewCategoryName(""); }}
-                className="text-gray-400 hover:text-gray-600"><X size={20} /></button>
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={() => { setShowCategoryManager(false); setCategoryError(""); setNewCategoryName(""); }}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <X size={20} />
+              </button>
             </div>
 
             <div className="mb-5">
               <label className="block text-xs font-semibold text-gray-600 mb-1.5">Add New Category</label>
               <div className="flex gap-2">
-                <input type="text" value={newCategoryName}
+                <input
+                  type="text"
+                  value={newCategoryName}
                   onChange={(e) => { setNewCategoryName(e.target.value); setCategoryError(""); }}
                   onKeyDown={(e) => { if (e.key === "Enter") handleAddCategory(); }}
                   placeholder="e.g. Handbags"
                   className="flex-1 px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#0077B6] focus:outline-none"
                 />
-                <button onClick={handleAddCategory} disabled={!newCategoryName.trim() || addingCategory}
-                  className="flex items-center gap-1.5 bg-[#0077B6] text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#023E8A] disabled:opacity-50 transition-colors">
+                <button
+                  type="button"
+                  onClick={handleAddCategory}
+                  disabled={!newCategoryName.trim() || addingCategory}
+                  className="flex items-center gap-1.5 bg-[#0077B6] text-white px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-[#023E8A] disabled:opacity-50 transition-colors"
+                >
                   {addingCategory ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />} Add
                 </button>
               </div>
@@ -390,15 +460,18 @@ export default function AdminProductsPage() {
                   <p className="text-gray-400 text-sm text-center py-4">No categories yet.</p>
                 ) : (
                   categories.map((cat) => (
-                    <div key={cat.id}
-                      className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#F8F9FA] hover:bg-blue-50 transition-colors group">
+                    <div key={cat.id} className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#F8F9FA] hover:bg-blue-50 transition-colors group">
                       <div>
                         <span className="text-sm font-medium text-[#023E8A]">{cat.name}</span>
                         <span className="text-xs text-gray-400 ml-2">/{cat.slug}</span>
                       </div>
-                      <button onClick={() => { setCategoryError(""); setConfirmDeleteCategory(cat); }}
+                      <button
+                        type="button"
+                        onClick={() => { setCategoryError(""); setConfirmDeleteCategory(cat); }}
                         disabled={deletingCategory === cat.id}
-                        className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-red-400 hover:bg-red-100 hover:text-red-600 transition-all">
+                        aria-label={`Delete ${cat.name}`}
+                        className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-red-400 hover:bg-red-100 hover:text-red-600 transition-all"
+                      >
                         {deletingCategory === cat.id ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
                       </button>
                     </div>
@@ -407,8 +480,11 @@ export default function AdminProductsPage() {
               </div>
             </div>
 
-            <button onClick={() => { setShowCategoryManager(false); setCategoryError(""); setNewCategoryName(""); }}
-              className="w-full mt-5 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold hover:bg-gray-50">
+            <button
+              type="button"
+              onClick={() => { setShowCategoryManager(false); setCategoryError(""); setNewCategoryName(""); }}
+              className="w-full mt-5 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold hover:bg-gray-50"
+            >
               Done
             </button>
           </div>
@@ -426,23 +502,31 @@ export default function AdminProductsPage() {
             <p className="text-sm text-gray-500 mb-1">
               You are about to delete <strong>&quot;{confirmDeleteCategory.name}&quot;</strong>.
             </p>
-            <p className="text-xs text-gray-400 mb-5">
-              Products using this category must be reassigned first.
-            </p>
+            <p className="text-xs text-gray-400 mb-5">Products using this category must be reassigned first.</p>
             {categoryError && (
               <p className="text-red-500 text-xs mb-4 bg-red-50 p-2 rounded-lg">{categoryError}</p>
             )}
             <div className="flex gap-3">
-              <button onClick={() => { setConfirmDeleteCategory(null); setCategoryError(""); }}
-                className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold hover:bg-gray-50">Cancel</button>
-              <button onClick={() => handleDeleteCategory(confirmDeleteCategory)} disabled={!!deletingCategory}
-                className="flex-1 py-2.5 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-600 disabled:opacity-50 flex items-center justify-center gap-2">
+              <button
+                type="button"
+                onClick={() => { setConfirmDeleteCategory(null); setCategoryError(""); }}
+                className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => handleDeleteCategory(confirmDeleteCategory)}
+                disabled={!!deletingCategory}
+                className="flex-1 py-2.5 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-600 disabled:opacity-50 flex items-center justify-center gap-2"
+              >
                 {deletingCategory ? <Loader2 size={14} className="animate-spin" /> : null} Delete
               </button>
             </div>
           </div>
         </div>
       )}
+
       {/* Confirm Delete Product */}
       {confirmDelete && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 p-4">
@@ -458,12 +542,19 @@ export default function AdminProductsPage() {
               This will also remove it from all inventory records. This cannot be undone.
             </p>
             <div className="flex gap-3">
-              <button onClick={() => setConfirmDelete(null)}
-                className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold hover:bg-gray-50">
+              <button
+                type="button"
+                onClick={() => setConfirmDelete(null)}
+                className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold hover:bg-gray-50"
+              >
                 Cancel
               </button>
-              <button onClick={() => handleDelete(confirmDelete)} disabled={deleting}
-                className="flex-1 py-2.5 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-600 disabled:opacity-50 flex items-center justify-center gap-2">
+              <button
+                type="button"
+                onClick={() => handleDelete(confirmDelete)}
+                disabled={deleting}
+                className="flex-1 py-2.5 rounded-xl bg-red-500 text-white text-sm font-semibold hover:bg-red-600 disabled:opacity-50 flex items-center justify-center gap-2"
+              >
                 {deleting ? <Loader2 size={14} className="animate-spin" /> : null} Delete
               </button>
             </div>
