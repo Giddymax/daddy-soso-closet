@@ -15,6 +15,7 @@ interface SalonItem {
 
 interface SaleRow {
   id: string;
+  branch_id: string;
   receipt_number: string;
   total_amount: number;
   payment_method: string;
@@ -24,7 +25,7 @@ interface SaleRow {
   customer_phone?: string | null;
   branch: { display_name: string; location: string } | null;
   staff: { full_name: string } | null;
-  sale_items: { id: string; quantity: number; unit_price: number; product: { name: string } | null }[];
+  sale_items: { id: string; product_id: string; quantity: number; unit_price: number; product: { name: string } | null }[];
   salon_sale_items?: SalonItem[];
 }
 
@@ -53,7 +54,7 @@ export default function AdminSalesPage() {
     setLoading(true);
     let query = supabase
       .from("sales")
-      .select("*, branch:branches(display_name, location), staff:staff(full_name), sale_items(id, quantity, unit_price, product:products(name)), salon_sale_items(id, service_name, quantity, unit_price)")
+      .select("*, branch:branches(display_name, location), staff:staff(full_name), sale_items(id, product_id, quantity, unit_price, product:products(name)), salon_sale_items(id, service_name, quantity, unit_price)")
       .order("created_at", { ascending: false })
       .limit(200);
 
@@ -107,7 +108,28 @@ export default function AdminSalesPage() {
   }
 
   async function deleteSale(saleId: string) {
-    if (!confirm("Permanently delete this sale? This cannot be undone.")) return;
+    if (!confirm("Permanently delete this sale? Product quantities will be restored to inventory.")) return;
+
+    const sale = sales.find((s) => s.id === saleId);
+    if (!sale) return;
+
+    // Restore inventory for each product item sold
+    for (const item of sale.sale_items) {
+      if (!item.product_id) continue;
+      const { data: inv } = await supabase
+        .from("inventory")
+        .select("id, quantity")
+        .eq("product_id", item.product_id)
+        .eq("branch_id", sale.branch_id)
+        .maybeSingle();
+      if (inv) {
+        await supabase
+          .from("inventory")
+          .update({ quantity: inv.quantity + item.quantity })
+          .eq("id", inv.id);
+      }
+    }
+
     await supabase.from("sales").delete().eq("id", saleId);
     setSales((prev) => prev.filter((s) => s.id !== saleId));
     if (expanded === saleId) setExpanded(null);
