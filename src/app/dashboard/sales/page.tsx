@@ -242,11 +242,21 @@ export default function SalesPage() {
                     type="button"
                     key={p.id}
                     onClick={() => addToCart({ id: p.id, name: p.name, price: p.price }, p.inventory_quantity)}
-                    className="card p-3 text-left hover:border-[#D4AF37] border border-transparent transition-all hover:-translate-y-0.5"
+                    className="card overflow-hidden text-left hover:border-[#D4AF37] border border-transparent transition-all hover:-translate-y-0.5"
                   >
-                    <p className="font-semibold text-xs text-[#023E8A] leading-snug mb-1 line-clamp-2">{p.name}</p>
-                    <p className="text-[#0077B6] font-bold text-sm">{formatCurrency(p.price)}</p>
-                    <p className="text-gray-400 text-xs mt-1">{p.inventory_quantity} in stock</p>
+                    <div className="relative w-full h-28 bg-gray-100">
+                      {p.image_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs">No image</div>
+                      )}
+                    </div>
+                    <div className="p-2.5">
+                      <p className="font-semibold text-xs text-[#023E8A] leading-snug mb-1 line-clamp-2">{p.name}</p>
+                      <p className="text-[#0077B6] font-bold text-sm">{formatCurrency(p.price)}</p>
+                      <p className="text-gray-400 text-xs mt-0.5">{p.inventory_quantity} in stock</p>
+                    </div>
                   </button>
                 ))}
               </div>
