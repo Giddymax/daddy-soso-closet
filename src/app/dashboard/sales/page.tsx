@@ -45,7 +45,7 @@ export default function SalesPage() {
     if (!branch) return;
     const { data } = await supabase
       .from("inventory")
-      .select("quantity, product:products(*, category:categories(name))")
+      .select("quantity, product:products(*, category:categories(name, slug))")
       .eq("branch_id", branch.id)
       .gt("quantity", 0);
     const prods = (data ?? []).map((inv) => ({
@@ -75,7 +75,11 @@ export default function SalesPage() {
       });
   }, [supabase]);
 
-  const filtered = products.filter((p) =>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const salonProducts = products.filter((p) => (p as any).category?.slug === "salon-products");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const boutiqueProducts = products.filter((p) => (p as any).category?.slug !== "salon-products");
+  const filtered = boutiqueProducts.filter((p) =>
     p.name.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -266,25 +270,57 @@ export default function SalesPage() {
 
         {/* ── Salon Services tab ── */}
         {tab === "salon" && (
-          <div className="space-y-3">
-            <p className="text-xs text-gray-400">Tap a service to add it to the cart.</p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {salonServices.map((s) => (
-                <button
-                  type="button"
-                  key={s.id}
-                  onClick={() => addToCart(s)}
-                  className="card p-4 text-left hover:border-[#D4AF37] border border-transparent transition-all hover:-translate-y-0.5 group"
-                >
-                  <div className="w-8 h-8 bg-[#0077B6]/10 rounded-full flex items-center justify-center mb-2 group-hover:bg-[#D4AF37]/20 transition-colors">
-                    <Scissors size={15} className="text-[#0077B6]" />
-                  </div>
-                  <p className="font-semibold text-xs text-[#023E8A] leading-snug mb-1">{s.name}</p>
-                  <p className="text-[#0077B6] font-bold text-sm">{formatCurrency(s.price)}</p>
-                  <p className="text-gray-400 text-xs mt-1">{s.duration}</p>
-                </button>
-              ))}
+          <div className="space-y-5">
+            <div>
+              <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide mb-2">Services</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {salonServices.map((s) => (
+                  <button
+                    type="button"
+                    key={s.id}
+                    onClick={() => addToCart(s)}
+                    className="card p-4 text-left hover:border-[#D4AF37] border border-transparent transition-all hover:-translate-y-0.5 group"
+                  >
+                    <div className="w-8 h-8 bg-[#0077B6]/10 rounded-full flex items-center justify-center mb-2 group-hover:bg-[#D4AF37]/20 transition-colors">
+                      <Scissors size={15} className="text-[#0077B6]" />
+                    </div>
+                    <p className="font-semibold text-xs text-[#023E8A] leading-snug mb-1">{s.name}</p>
+                    <p className="text-[#0077B6] font-bold text-sm">{formatCurrency(s.price)}</p>
+                    <p className="text-gray-400 text-xs mt-1">{s.duration}</p>
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {salonProducts.length > 0 && (
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <p className="text-xs text-gray-500 font-semibold uppercase tracking-wide">Salon Products</p>
+                  <div className="flex-1 h-px bg-gray-100" />
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {salonProducts.map((p) => (
+                    <button type="button" key={p.id}
+                      onClick={() => addToCart({ id: p.id, name: p.name, price: p.price }, p.inventory_quantity)}
+                      className="card overflow-hidden text-left hover:border-[#D4AF37] border border-transparent transition-all hover:-translate-y-0.5">
+                      <div className="relative w-full h-24 bg-gray-100">
+                        {p.image_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs">No image</div>
+                        )}
+                      </div>
+                      <div className="p-2.5">
+                        <p className="font-semibold text-xs text-[#023E8A] leading-snug mb-1 line-clamp-2">{p.name}</p>
+                        <p className="text-[#0077B6] font-bold text-sm">{formatCurrency(p.price)}</p>
+                        <p className="text-gray-400 text-xs mt-0.5">{p.inventory_quantity} in stock</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

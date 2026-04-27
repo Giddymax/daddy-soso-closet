@@ -4,6 +4,7 @@ import SupabaseImage from "@/components/shared/SupabaseImage";
 import { ArrowLeft, ShoppingBag, MapPin, Phone, Scissors, Clock, Sparkles } from "lucide-react";
 import { createServerClient } from "@/lib/supabase-server";
 import ProductGallery from "@/components/landing/ProductGallery";
+import SalonProductGrid from "@/components/landing/SalonProductGrid";
 import CartDrawer from "@/components/landing/CartDrawer";
 import Footer from "@/components/layout/Footer";
 
@@ -43,16 +44,27 @@ async function getBranchData() {
     .eq("branch_id", branch?.id ?? "")
     .eq("product.is_active", true);
 
-  const products = (productsRes.data ?? []).map((inv: { quantity: number; product: unknown }) => ({
+  const allProducts = (productsRes.data ?? []).map((inv: { quantity: number; product: unknown }) => ({
     ...(inv.product as Record<string, unknown>),
     inventory_quantity: inv.quantity,
   }));
 
-  return { branch, settings: settingsMap, products, categories: categoriesRes.data ?? [] };
+  type ProductWithMeta = Record<string, unknown> & { category?: { slug?: string } };
+  const salonProducts = (allProducts as ProductWithMeta[]).filter(
+    (p) => (p.category as { slug?: string } | null | undefined)?.slug === "salon-products"
+  );
+  const boutiqueProducts = (allProducts as ProductWithMeta[]).filter(
+    (p) => (p.category as { slug?: string } | null | undefined)?.slug !== "salon-products"
+  );
+  const boutiqueCategories = (categoriesRes.data ?? []).filter(
+    (c: { slug: string }) => c.slug !== "salon-products"
+  );
+
+  return { branch, settings: settingsMap, boutiqueProducts, salonProducts, categories: boutiqueCategories };
 }
 
 export default async function AbaamPage() {
-  const { branch, settings, products, categories } = await getBranchData();
+  const { branch, settings, boutiqueProducts, salonProducts, categories } = await getBranchData();
 
   return (
     <>
@@ -106,7 +118,7 @@ export default async function AbaamPage() {
 
         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <ProductGallery
-          products={products as any}
+          products={boutiqueProducts as any}
           categories={categories}
           branchConfig={{ branchId: branch?.id ?? "", storageKey: "abaam", branchName: "Abaam Branch" }}
         />
@@ -237,6 +249,9 @@ export default async function AbaamPage() {
                 </div>
               )}
             </div>
+
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            <SalonProductGrid products={salonProducts as any} storageKey="abaam" />
           </div>
         </section>
       </main>
