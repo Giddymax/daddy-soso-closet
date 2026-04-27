@@ -39,9 +39,9 @@ async function getBranchData() {
 
   const productsRes = await supabase
     .from("inventory")
-    .select("quantity, product:products(*, category:categories(*))")
+    .select("quantity, product:products!inner(*, category:categories(*))")
     .eq("branch_id", branch?.id ?? "")
-    .gt("quantity", 0);
+    .eq("product.is_active", true);
 
   const products = (productsRes.data ?? []).map((inv: { quantity: number; product: unknown }) => ({
     ...(inv.product as Record<string, unknown>),
