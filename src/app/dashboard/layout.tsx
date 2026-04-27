@@ -31,10 +31,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const isAdmin = role === "admin";
 
   useEffect(() => {
-    if (isAdmin && !branch) {
+    if (isAdmin) {
       supabase.from("branches").select("*").then(({ data }) => {
         setBranches(data ?? []);
-        setShowBranchPicker(true);
+        if (!branch) setShowBranchPicker(true);
       });
     }
   }, [isAdmin, branch, supabase]);
@@ -106,12 +106,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </span>
             )}
           </div>
-          {isAdmin && branch && (
+          {isAdmin && (
             <button
-              onClick={() => { setBranches([]); setShowBranchPicker(true); supabase.from("branches").select("*").then(({ data }) => setBranches(data ?? [])); }}
+              type="button"
+              onClick={() => { setBranch(null); setShowBranchPicker(true); }}
               className="text-[10px] text-white/50 hover:text-white/80 mt-1.5 transition-colors underline underline-offset-2"
             >
-              Switch branch
+              {branch ? "Switch branch" : "Select branch"}
             </button>
           )}
         </div>

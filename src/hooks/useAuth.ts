@@ -35,7 +35,9 @@ export function useAuth() {
 
         setStaff(staffData);
         setRole(staffData.role);
-        setBranch(staffData.branch ?? null);
+        // Admin is branch-neutral — they pick a branch per-session via the branch selector.
+        // Staff are always tied to their assigned branch.
+        setBranch(staffData.role === "admin" ? null : staffData.branch ?? null);
 
         router.push(staffData.role === "admin" ? "/admin" : "/dashboard");
       } catch (error) {
