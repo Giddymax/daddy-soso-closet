@@ -105,22 +105,28 @@ const SalonProductCard = memo(function SalonProductCard({
 export default function SalonProductGrid({
   products,
   storageKey = "abaam",
+  hideHeading = false,
 }: {
   products: ProductWithMeta[];
   storageKey?: string;
+  hideHeading?: boolean;
 }) {
   if (products.length === 0) return null;
 
   return (
-    <div className="mt-12">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-8 h-1 bg-[#C4954A] rounded-full" />
-        <h3 className="font-playfair text-xl font-bold text-[#2C1A0E]">Salon Products</h3>
-        <div className="flex-1 h-px bg-[#C4954A]/20" />
-      </div>
-      <p className="text-stone-500 text-sm mb-6">
-        Premium hair care and beauty products available at our salon — add them to your cart for pickup.
-      </p>
+    <div className={hideHeading ? "" : "mt-12"}>
+      {!hideHeading && (
+        <>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-8 h-1 bg-[#C4954A] rounded-full" />
+            <h3 className="font-playfair text-xl font-bold text-[#2C1A0E]">Salon Products</h3>
+            <div className="flex-1 h-px bg-[#C4954A]/20" />
+          </div>
+          <p className="text-stone-500 text-sm mb-6">
+            Premium hair care and beauty products available at our salon — add them to your cart for pickup.
+          </p>
+        </>
+      )}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {products.map((p) => (
           <SalonProductCard key={p.id} product={p} storageKey={storageKey} />

@@ -7,6 +7,8 @@ import {
 import { createServerClient } from "@/lib/supabase-server";
 import Footer from "@/components/layout/Footer";
 import BookingForm from "@/components/salon/BookingForm";
+import SalonProductGrid from "@/components/landing/SalonProductGrid";
+import CartDrawer from "@/components/landing/CartDrawer";
 
 export const metadata: Metadata = {
   title: "Salon | Daddy SoSo Closet — Abaam Branch",
@@ -14,12 +16,38 @@ export const metadata: Metadata = {
     "Book a premium salon appointment at Daddy SoSo Closet, Abaam Branch. Hair care, styling, and beauty services in Kwaebibirim Municipal, Eastern Region, Ghana.",
 };
 
-async function getSalonSettings() {
+async function getSalonData() {
   const supabase = await createServerClient();
-  const { data } = await supabase.from("site_settings").select("key, value");
+
+  const [settingsRes, branchRes] = await Promise.all([
+    supabase.from("site_settings").select("key, value"),
+    supabase.from("branches").select("id, display_name, location").eq("name", "abaam").single(),
+  ]);
+
   const map: Record<string, string> = {};
-  (data ?? []).forEach((s: { key: string; value: string }) => { map[s.key] = s.value; });
-  return map;
+  (settingsRes.data ?? []).forEach((s: { key: string; value: string }) => { map[s.key] = s.value; });
+
+  const branch = branchRes.data;
+  let salonProducts: unknown[] = [];
+
+  if (branch) {
+    const { data: invData } = await supabase
+      .from("inventory")
+      .select("quantity, product:products!inner(*, category:categories(*))")
+      .eq("branch_id", branch.id)
+      .eq("product.is_active", true);
+
+    salonProducts = (invData ?? [])
+      .filter((inv: { quantity: number; product: unknown }) =>
+        (inv.product as Record<string, unknown> & { category?: { slug?: string } })?.category?.slug === "salon-products"
+      )
+      .map((inv: { quantity: number; product: unknown }) => ({
+        ...(inv.product as Record<string, unknown>),
+        inventory_quantity: inv.quantity,
+      }));
+  }
+
+  return { settings: map, branch, salonProducts };
 }
 
 const servicesMeta = [
@@ -37,7 +65,7 @@ const galleryKeys = [
 ];
 
 export default async function SalonPage() {
-  const s = await getSalonSettings();
+  const { settings: s, branch, salonProducts } = await getSalonData();
   const phone = s.phone_number || "0594299293";
 
   return (
@@ -204,6 +232,24 @@ export default async function SalonPage() {
           </div>
         </section>
 
+        {/* ─── Salon Products ─── */}
+        {salonProducts.length > 0 && (
+          <section className="py-20 bg-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-12">
+                <p className="text-[#10B981] font-semibold text-sm uppercase tracking-widest mb-2">Take Home the Goodness</p>
+                <h2 className="font-playfair text-4xl font-bold text-[#065F46]">Salon Products</h2>
+                <div className="w-16 h-1 bg-[#003153] mx-auto mt-3 rounded-full" />
+                <p className="text-gray-500 mt-4 max-w-xl mx-auto text-sm">
+                  Professional-grade hair care products used and sold at our salon. Add to cart and pick up at the Abaam Branch.
+                </p>
+              </div>
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              <SalonProductGrid products={salonProducts as any} storageKey="abaam" hideHeading />
+            </div>
+          </section>
+        )}
+
         {/* ─── Gallery ─── */}
         <section className="py-20 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -291,6 +337,15 @@ export default async function SalonPage() {
           </div>
         </section>
       </main>
+
+      {salonProducts.length > 0 && (
+        <CartDrawer
+          whatsappPhone={s.abaam_salon_whatsapp || s.phone_number}
+          branchId={branch?.id}
+          branchName="Abaam Branch — Salon"
+          storageKey="abaam"
+        />
+      )}
 
       <Footer
         instagramUrl={s.instagram_url}
