@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import { Plus, Pencil, ToggleLeft, ToggleRight, Loader2, X, Upload, Tag, Trash2, AlertTriangle } from "lucide-react";
+import { Plus, Pencil, ToggleLeft, ToggleRight, Loader2, X, Upload, Tag, Trash2, AlertTriangle, Search } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase";
 import { formatCurrency } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
@@ -32,6 +32,7 @@ export default function AdminProductsPage() {
   const [deletingCategory, setDeletingCategory] = useState<string | null>(null);
   const [categoryError, setCategoryError] = useState("");
   const [confirmDeleteCategory, setConfirmDeleteCategory] = useState<Category | null>(null);
+  const [search, setSearch] = useState("");
 
   const load = useCallback(async () => {
     const [prodsRes, catsRes, branchesRes] = await Promise.all([
@@ -194,6 +195,17 @@ export default function AdminProductsPage() {
         </div>
       </div>
 
+      <div className="relative">
+        <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+        <input
+          type="text"
+          placeholder="Search by name or category…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#0077B6] focus:outline-none"
+        />
+      </div>
+
       <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -211,7 +223,10 @@ export default function AdminProductsPage() {
                 ? Array.from({ length: 5 }).map((_, i) => (
                     <tr key={i}><td colSpan={5} className="px-4 py-3"><div className="skeleton h-4 rounded" /></td></tr>
                   ))
-                : products.map((p) => (
+                : products.filter((p) => {
+                    const q = search.toLowerCase();
+                    return p.name.toLowerCase().includes(q) || (p.category?.name ?? "").toLowerCase().includes(q);
+                  }).map((p) => (
                     <tr key={p.id} className={`hover:bg-gray-50 ${!p.is_active ? "opacity-50" : ""}`}>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
@@ -265,8 +280,13 @@ export default function AdminProductsPage() {
               }
             </tbody>
           </table>
-          {!loading && products.length === 0 && (
-            <p className="text-center text-gray-400 py-10 text-sm">No products yet.</p>
+          {!loading && products.filter((p) => {
+            const q = search.toLowerCase();
+            return p.name.toLowerCase().includes(q) || (p.category?.name ?? "").toLowerCase().includes(q);
+          }).length === 0 && (
+            <p className="text-center text-gray-400 py-10 text-sm">
+              {search ? `No results for "${search}".` : "No products yet."}
+            </p>
           )}
         </div>
       </div>

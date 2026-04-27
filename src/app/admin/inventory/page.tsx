@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import { Package, Plus, AlertTriangle } from "lucide-react";
+import { Package, Plus, AlertTriangle, Search } from "lucide-react";
 import { createBrowserClient } from "@/lib/supabase";
 import { useAuthStore } from "@/store/authStore";
 import { formatGhanaDateTime } from "@/lib/utils";
@@ -26,6 +26,7 @@ export default function AdminInventoryPage() {
   const [restockQty, setRestockQty] = useState<number | "">("");
   const [restockNote, setRestockNote] = useState("");
   const [restocking, setRestocking] = useState(false);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     supabase.from("branches").select("*").order("name").then(({ data }) => {
@@ -82,6 +83,14 @@ export default function AdminInventoryPage() {
     return <span className="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full font-bold">In Stock</span>;
   }
 
+  const filtered = inventory.filter((item) => {
+    const q = search.toLowerCase();
+    return (
+      item.product?.name.toLowerCase().includes(q) ||
+      ((item.product?.category as { name: string } | null)?.name ?? "").toLowerCase().includes(q)
+    );
+  });
+
   if (loadingBranches) return <div className="skeleton h-12 rounded-xl w-48" />;
 
   return (
@@ -95,7 +104,7 @@ export default function AdminInventoryPage() {
           {branches.map((b) => (
             <button
               key={b.id}
-              onClick={() => setSelectedBranch(b)}
+              onClick={() => { setSelectedBranch(b); setSearch(""); }}
               className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
                 selectedBranch?.id === b.id
                   ? "bg-[#0077B6] text-white"
@@ -106,6 +115,17 @@ export default function AdminInventoryPage() {
             </button>
           ))}
         </div>
+      </div>
+
+      <div className="relative">
+        <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+        <input
+          type="text"
+          placeholder="Search by product or category…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-[#0077B6] focus:outline-none"
+        />
       </div>
 
       <div className="card overflow-hidden">
@@ -126,7 +146,7 @@ export default function AdminInventoryPage() {
                 ? Array.from({ length: 5 }).map((_, i) => (
                     <tr key={i}><td colSpan={6} className="px-4 py-3"><div className="skeleton h-4 rounded" /></td></tr>
                   ))
-                : inventory.map((item) => (
+                : filtered.map((item) => (
                     <tr key={item.id} className="hover:bg-gray-50">
                       <td className="px-4 py-3 font-medium text-[#023E8A]">{item.product?.name ?? "—"}</td>
                       <td className="px-4 py-3 text-gray-500">{(item.product?.category as { name: string } | null)?.name ?? "—"}</td>
@@ -148,10 +168,10 @@ export default function AdminInventoryPage() {
               }
             </tbody>
           </table>
-          {!loadingInventory && inventory.length === 0 && (
+          {!loadingInventory && filtered.length === 0 && (
             <div className="text-center py-12 text-gray-400">
               <Package size={32} className="mx-auto mb-2 opacity-30" />
-              <p>No inventory items found for this branch.</p>
+              <p>{search ? `No results for "${search}".` : "No inventory items found for this branch."}</p>
             </div>
           )}
         </div>
