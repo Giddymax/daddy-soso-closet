@@ -36,7 +36,6 @@ export async function generateMetadata(): Promise<Metadata> {
     title: "Daddy SoSo Closet | Fashion Boutique in Ghana",
     description:
       "Shop the latest fashion at Daddy SoSo Closet. Two branches in Tweapease and Abaam, Kwaebibirim Municipal, Eastern Region, Ghana. Clothing, jewelry, footwear and more.",
-    manifest: "/manifest.json",
     appleWebApp: {
       capable: true,
       statusBarStyle: "black-translucent",
@@ -52,11 +51,11 @@ export async function generateMetadata(): Promise<Metadata> {
     icons: {
       icon: logoUrl
         ? [
-            { url: logoUrl, sizes: "32x32" },
-            { url: logoUrl, sizes: "64x64" },
-            { url: logoUrl, sizes: "192x192" },
+            { url: logoUrl, sizes: "32x32", rel: "icon" },
+            { url: logoUrl, sizes: "192x192", rel: "icon" },
           ]
         : [{ url: "/icons/icon.svg", type: "image/svg+xml" }],
+      shortcut: logoUrl ? [{ url: logoUrl }] : [{ url: "/icons/icon.svg" }],
       apple: logoUrl
         ? [{ url: logoUrl, sizes: "180x180" }]
         : [{ url: "/icons/icon.svg" }],
