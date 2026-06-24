@@ -1,11 +1,17 @@
 "use client";
 
+import Image from "next/image";
+
 export default function OfflinePage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-warm-cream px-6 text-center">
-      <div className="w-16 h-16 rounded-full bg-[#2C1A0E] flex items-center justify-center mb-6">
-        <span className="text-white text-2xl font-bold">DS</span>
-      </div>
+      <Image
+        src="/logo.png"
+        alt="Daddy SoSo Closet"
+        width={80}
+        height={80}
+        className="w-20 h-20 object-contain mb-6"
+      />
       <h1 className="font-playfair text-3xl font-bold text-[#2C1A0E] mb-3">
         You're Offline
       </h1>
