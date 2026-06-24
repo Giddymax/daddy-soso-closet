@@ -106,7 +106,7 @@ export default function CartDrawer({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 z-40 bg-[#2C1A0E] text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center hover:bg-[#8B5E3C] transition-colors"
+        className="fixed bottom-6 right-20 z-40 bg-[#2C1A0E] text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center hover:bg-[#8B5E3C] transition-colors"
         aria-label="Open cart"
       >
         <ShoppingCart size={22} />
