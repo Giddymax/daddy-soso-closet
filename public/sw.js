@@ -1,6 +1,6 @@
-const CACHE_NAME = "daddysoso-v2";
+const CACHE_NAME = "daddysoso-v3";
 
-const PRECACHE_URLS = ["/", "/offline", "/logo.png"];
+const PRECACHE_URLS = ["/", "/offline", "/icon-192.png", "/icon-512.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
