@@ -38,9 +38,9 @@ export const metadata: Metadata = {
     type: "website",
   },
   icons: {
-    icon: [{ url: "/api/app-icon", sizes: "any" }],
-    shortcut: [{ url: "/api/app-icon" }],
-    apple: [{ url: "/api/app-icon", sizes: "180x180" }],
+    icon: [{ url: "/logo.png", sizes: "any", type: "image/png" }],
+    shortcut: [{ url: "/logo.png" }],
+    apple: [{ url: "/logo.png", sizes: "180x180", type: "image/png" }],
   },
 };
 

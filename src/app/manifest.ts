@@ -14,13 +14,13 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: "/",
     icons: [
       {
-        src: "/api/app-icon",
+        src: "/logo.png",
         sizes: "any",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/api/app-icon",
+        src: "/logo.png",
         sizes: "any",
         type: "image/png",
         purpose: "maskable",
