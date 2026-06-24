@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
-import { createServerClient } from "@/lib/supabase-server";
 import { ServiceWorkerRegistration } from "@/components/shared/ServiceWorkerRegistration";
 
 const playfair = Playfair_Display({
@@ -22,46 +21,28 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export async function generateMetadata(): Promise<Metadata> {
-  const supabase = await createServerClient();
-  const { data } = await supabase
-    .from("site_settings")
-    .select("value")
-    .eq("key", "logo_url")
-    .single();
-
-  const logoUrl = data?.value;
-
-  return {
-    title: "Daddy SoSo Closet | Fashion Boutique in Ghana",
-    description:
-      "Shop the latest fashion at Daddy SoSo Closet. Two branches in Tweapease and Abaam, Kwaebibirim Municipal, Eastern Region, Ghana. Clothing, jewelry, footwear and more.",
-    appleWebApp: {
-      capable: true,
-      statusBarStyle: "black-translucent",
-      title: "DaddySoSo",
-    },
-    openGraph: {
-      title: "Daddy SoSo Closet",
-      description: "Fashion. Style. Elegance.",
-      url: "https://www.daddysosocloset.com",
-      siteName: "Daddy SoSo Closet",
-      type: "website",
-    },
-    icons: {
-      icon: logoUrl
-        ? [
-            { url: logoUrl, sizes: "32x32", rel: "icon" },
-            { url: logoUrl, sizes: "192x192", rel: "icon" },
-          ]
-        : [{ url: "/icons/icon.svg", type: "image/svg+xml" }],
-      shortcut: logoUrl ? [{ url: logoUrl }] : [{ url: "/icons/icon.svg" }],
-      apple: logoUrl
-        ? [{ url: logoUrl, sizes: "180x180" }]
-        : [{ url: "/icons/icon.svg" }],
-    },
-  };
-}
+export const metadata: Metadata = {
+  title: "Daddy SoSo Closet | Fashion Boutique in Ghana",
+  description:
+    "Shop the latest fashion at Daddy SoSo Closet. Two branches in Tweapease and Abaam, Kwaebibirim Municipal, Eastern Region, Ghana. Clothing, jewelry, footwear and more.",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "DaddySoSo",
+  },
+  openGraph: {
+    title: "Daddy SoSo Closet",
+    description: "Fashion. Style. Elegance.",
+    url: "https://www.daddysosocloset.com",
+    siteName: "Daddy SoSo Closet",
+    type: "website",
+  },
+  icons: {
+    icon: [{ url: "/api/app-icon", sizes: "any" }],
+    shortcut: [{ url: "/api/app-icon" }],
+    apple: [{ url: "/api/app-icon", sizes: "180x180" }],
+  },
+};
 
 export default function RootLayout({
   children,

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Phone, Mail, MapPin, Instagram, Facebook } from "lucide-react";
+import { Phone, Mail, MapPin, Instagram, Facebook, Settings } from "lucide-react";
 
 interface FooterProps {
   instagramUrl?: string;
@@ -68,7 +68,6 @@ export default function Footer({
               {showSalonLink && <li><Link href="/salon" className={`${hoverAccent} transition-colors`}>Salon</Link></li>}
               <li><Link href="/#products" className={`${hoverAccent} transition-colors`}>Our Products</Link></li>
               <li><Link href="/#contact" className={`${hoverAccent} transition-colors`}>Contact Us</Link></li>
-              <li><Link href="/auth/login" className={`${hoverAccent} transition-colors`}>Staff Dashboard</Link></li>
             </ul>
           </div>
 
@@ -92,8 +91,11 @@ export default function Footer({
           </div>
         </div>
 
-        <div className="border-t border-white/10 mt-10 pt-6 text-center text-white/40 text-xs">
-          © {new Date().getFullYear()} Daddy SoSo Closet. All rights reserved.
+        <div className="border-t border-white/10 mt-10 pt-6 flex items-center justify-between text-white/40 text-xs">
+          <span>© {new Date().getFullYear()} Daddy SoSo Closet. All rights reserved.</span>
+          <Link href="/auth/login" aria-label="Staff login" className="text-white/30 hover:text-white/60 transition-colors">
+            <Settings size={16} />
+          </Link>
         </div>
       </div>
     </footer>

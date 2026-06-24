@@ -2,8 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import SupabaseImage from "@/components/shared/SupabaseImage";
-import { Menu, X, ShoppingBag } from "lucide-react";
-import { useAuthStore } from "@/store/authStore";
+import { Menu, X } from "lucide-react";
 
 interface NavbarProps {
   logoUrl?: string;
@@ -11,7 +10,6 @@ interface NavbarProps {
 
 export default function Navbar({ logoUrl }: NavbarProps) {
   const [open, setOpen] = useState(false);
-  const { role } = useAuthStore();
 
   const links = [
     { href: "/", label: "Home" },
@@ -55,23 +53,7 @@ export default function Navbar({ logoUrl }: NavbarProps) {
                 {l.label}
               </Link>
             ))}
-            {role && (
-              <span className="text-xs bg-[#C4954A] text-white px-2 py-1 rounded-full font-bold">
-                {role === "admin" ? "Admin" : "Staff"}
-              </span>
-            )}
           </nav>
-
-          {/* Dashboard Button */}
-          <div className="hidden md:flex items-center gap-3">
-            <Link
-              href="/auth/login"
-              className="flex items-center gap-2 bg-[#2C1A0E] text-white px-4 py-2 rounded-full font-bold text-sm hover:bg-[#8B5E3C] transition-colors duration-200"
-            >
-              <ShoppingBag size={16} />
-              Go to Dashboard
-            </Link>
-          </div>
 
           {/* Mobile Hamburger */}
           <button
@@ -98,14 +80,6 @@ export default function Navbar({ logoUrl }: NavbarProps) {
                 {l.label}
               </Link>
             ))}
-            <Link
-              href="/auth/login"
-              onClick={() => setOpen(false)}
-              className="flex items-center justify-center gap-2 bg-[#2C1A0E] text-white px-4 py-3 rounded-full font-bold mt-2"
-            >
-              <ShoppingBag size={16} />
-              Go to Dashboard
-            </Link>
           </div>
         </div>
       )}
