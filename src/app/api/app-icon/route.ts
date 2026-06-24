@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
@@ -16,12 +16,12 @@ export async function GET(req: NextRequest) {
 
   const logoUrl = data?.value;
   if (!logoUrl) {
-    return NextResponse.redirect(new URL("/icons/icon.svg", req.url));
+    return new NextResponse(null, { status: 404 });
   }
 
   const response = await fetch(logoUrl);
   if (!response.ok) {
-    return NextResponse.redirect(new URL("/icons/icon.svg", req.url));
+    return new NextResponse(null, { status: 502 });
   }
 
   const contentType = response.headers.get("content-type") || "image/png";
